@@ -173,11 +173,20 @@
   .feld{display:flex;flex-direction:column;gap:5px;min-width:0}
   .feld label,.legende{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
     text-transform:uppercase;color:var(--tinte-70)}
-  .feld input[type=text],.feld input[type=number],.feld input[type=date],.feld textarea{
+  .feld input[type=text],.feld input[type=number],.feld input[type=date],.feld input[type=time],.feld textarea{
     font-family:var(--fs-mono);font-size:14px;padding:9px 10px;border:1px solid var(--linie);
     border-radius:var(--r);background:#fff;color:var(--tinte);width:100%}
   .feld textarea{font-family:var(--fs-sans);resize:vertical;min-height:62px}
   .feld input:focus,.feld textarea:focus{border-color:var(--signal);outline:none}
+
+  .wetter-auto{display:flex;gap:7px;align-items:center;margin:10px 0 7px;flex-wrap:wrap}
+  .wetter-auto input{flex:1 1 150px;min-width:0;font-family:var(--fs-mono);font-size:13px;
+    padding:8px 10px;border:1px solid var(--linie);border-radius:var(--r);background:#fff;color:var(--tinte)}
+  .wetter-auto input:focus{border-color:var(--signal);outline:none}
+  .status{font-family:var(--fs-mono);font-size:10.5px;line-height:1.5;color:var(--tinte-70);
+    margin:0 0 13px;letter-spacing:.03em}
+  .status.warnung{color:var(--rot)}
+  .status.gut{color:var(--signal)}
 
   .dauer-feld{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
   .abschnitt{border-top:1px solid var(--linie-fein);padding-top:14px;margin-top:4px}
@@ -268,6 +277,7 @@
     <button class="knopf-still" id="json-knopf">Sicherung erstellen</button>
     <button class="knopf-still" id="import-knopf">Sicherung einlesen</button>
     <input type="file" id="import-datei" accept="application/json,.json" hidden>
+    <a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:inherit">Wetterdaten: Open-Meteo</a>
     <span class="rest" id="hinweis"></span>
   </footer>
 </div>
@@ -593,7 +603,9 @@
     const felder = [
       ["Geschwindigkeit", zahl(km_h,2)+" km/h"],
       ["Dauer", zeitText(l.sek)+" h"],
+      l.zeit ? ["Startzeit", sichern(l.zeit)+" Uhr"] : null,
       l.ort ? ["Strecke", sichern(l.ort)] : null,
+      l.wetterOrt ? ["Wetterort", sichern(l.wetterOrt)] : null,
       l.temp !== "" && l.temp != null ? ["Temperatur", zahl(l.temp,1)+" °C"] : null,
       l.feuchte !== "" && l.feuchte != null ? ["Luftfeuchte", Math.round(l.feuchte)+" %"] : null,
       l.regen !== "" && l.regen != null ? ["Niederschlag", zahl(l.regen,1)+" mm"] : null,
@@ -639,6 +651,75 @@
     alles();
   }
 
+  /* ---------- Wetterabruf über Open-Meteo ---------- */
+  let letzterOrt = null;   // {name, lat, lon}
+
+  async function ortSuchen(name){
+    const u = "https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&format=json&name="
+      + encodeURIComponent(name);
+    const a = await fetch(u);
+    if(!a.ok) throw new Error("Die Ortssuche antwortet nicht.");
+    const d = await a.json();
+    if(!d.results || !d.results.length) throw new Error("Diesen Ort gibt es nicht in der Ortsliste.");
+    const t = d.results[0];
+    return { name: t.name + (t.admin1 ? ", " + t.admin1 : ""), lat: t.latitude, lon: t.longitude };
+  }
+
+  function gpsHolen(){
+    return new Promise((ok, fehl)=>{
+      if(!navigator.geolocation) return fehl(new Error("Dieses Gerät gibt den Standort nicht heraus."));
+      navigator.geolocation.getCurrentPosition(
+        p=>ok({ name: zahl(p.coords.latitude,3)+" / "+zahl(p.coords.longitude,3),
+                lat: p.coords.latitude, lon: p.coords.longitude }),
+        e=>fehl(new Error(e.code === 1
+          ? "Der Zugriff auf den Standort wurde abgelehnt."
+          : "Der Standort ließ sich nicht bestimmen.")),
+        { timeout: 12000, maximumAge: 600000 });
+    });
+  }
+
+  async function wetterHolen(ort, datum, zeit, dauerSek){
+    const tageAlt = (Date.now() - alsDatum(datum).getTime()) / 86400000;
+    const basis = tageAlt > 60
+      ? "https://archive-api.open-meteo.com/v1/archive"
+      : "https://api.open-meteo.com/v1/forecast";
+    const u = basis + "?latitude=" + ort.lat + "&longitude=" + ort.lon
+      + "&start_date=" + datum + "&end_date=" + datum
+      + "&hourly=temperature_2m,relative_humidity_2m,precipitation,cloud_cover&timezone=auto";
+
+    const a = await fetch(u);
+    if(!a.ok) throw new Error("Der Wetterdienst antwortet nicht (" + a.status + ").");
+    const d = await a.json();
+    const st = d && d.hourly;
+    if(!st || !Array.isArray(st.temperature_2m)) throw new Error("Für diesen Tag liegen keine Werte vor.");
+
+    // Stundenfenster: von der Startzeit über die Dauer des Laufs
+    let von = 0, bis = 23;
+    if(zeit){
+      const stunde = Number(String(zeit).slice(0,2));
+      von = Math.max(0, Math.min(23, stunde));
+      bis = Math.min(23, von + Math.max(0, Math.ceil((dauerSek || 0) / 3600) - 1));
+    }
+    const werte = (reihe)=>{
+      const w = [];
+      for(let i = von; i <= bis; i++) if(reihe && reihe[i] != null) w.push(Number(reihe[i]));
+      return w;
+    };
+    const mittel = (reihe)=>{ const w = werte(reihe); return w.length ? w.reduce((s,x)=>s+x,0)/w.length : null; };
+    const summe  = (reihe)=>{ const w = werte(reihe); return w.length ? w.reduce((s,x)=>s+x,0) : null; };
+
+    const temp = mittel(st.temperature_2m);
+    if(temp == null) throw new Error("Für diese Uhrzeit liegen keine Werte vor.");
+    const fe = mittel(st.relative_humidity_2m), re = summe(st.precipitation), wo = mittel(st.cloud_cover);
+    return {
+      temp: Math.round(temp * 10) / 10,
+      feuchte: fe == null ? "" : Math.round(fe),
+      regen: re == null ? "" : Math.round(re * 10) / 10,
+      wolken: wo == null ? 40 : Math.round(wo / 5) * 5,
+      vorhersage: tageAlt < 0.5
+    };
+  }
+
   /* ---------- Formular ---------- */
   function oeffneFormular(lauf){
     bearbeitung = lauf || null;
@@ -654,15 +735,17 @@
       '<div class="feldgruppe">'+
         '<div class="feld"><label for="f-datum">Datum</label>'+
           '<input type="date" id="f-datum" value="'+(l.datum||heute)+'"></div>'+
+        '<div class="feld"><label for="f-zeit">Startzeit</label>'+
+          '<input type="time" id="f-zeit" value="'+(l.zeit||"")+'"></div>'+
         '<div class="feld"><label for="f-km">Distanz in km</label>'+
           '<input type="text" inputmode="decimal" id="f-km" placeholder="10,4" value="'+(l.km != null ? zahl(l.km,2) : "")+'"></div>'+
-        '<div class="feld"><span class="legende">Dauer std / min / sek</span>'+
-          '<div class="dauer-feld">'+
-            '<input type="number" id="f-h" min="0" placeholder="0" value="'+(lauf ? h : "")+'" aria-label="Stunden">'+
-            '<input type="number" id="f-m" min="0" max="59" placeholder="52" value="'+(lauf ? m : "")+'" aria-label="Minuten">'+
-            '<input type="number" id="f-s" min="0" max="59" placeholder="00" value="'+(lauf ? s : "")+'" aria-label="Sekunden">'+
-          "</div></div>"+
       "</div>"+
+      '<div class="feld" style="margin-bottom:14px"><span class="legende">Dauer std / min / sek</span>'+
+        '<div class="dauer-feld">'+
+          '<input type="number" id="f-h" min="0" placeholder="0" value="'+(lauf ? h : "")+'" aria-label="Stunden">'+
+          '<input type="number" id="f-m" min="0" max="59" placeholder="52" value="'+(lauf ? m : "")+'" aria-label="Minuten">'+
+          '<input type="number" id="f-s" min="0" max="59" placeholder="00" value="'+(lauf ? s : "")+'" aria-label="Sekunden">'+
+        "</div></div>"+
 
       '<div class="tempo-schau"><span class="gross" id="f-tempo">—</span>'+
         '<span class="klein">min/km</span>'+
@@ -670,7 +753,13 @@
         '<span class="klein">km/h</span></div>'+
 
       '<div class="abschnitt"><span class="legende">Wetterbedingungen</span>'+
-        '<div class="feldgruppe" style="margin-top:9px">'+
+        '<div class="wetter-auto">'+
+          '<input type="text" id="f-wetterort" placeholder="Ort, z. B. Berlin" value="'+sichern(l.wetterOrt || (letzterOrt ? letzterOrt.name : ""))+'" aria-label="Ort für die Wetterabfrage">'+
+          '<button type="button" class="knopf-still" id="f-gps">Mein Standort</button>'+
+          '<button type="button" class="knopf-still betont" id="f-wetter-knopf">Wetter abrufen</button>'+
+        "</div>"+
+        '<p class="status" id="f-wetter-status">Holt die Werte für Datum und Startzeit von Open-Meteo. Ohne Startzeit wird der Tagesdurchschnitt genommen.</p>'+
+        '<div class="feldgruppe">'+
           '<div class="feld"><label for="f-temp">Temperatur °C</label>'+
             '<input type="text" inputmode="decimal" id="f-temp" placeholder="14" value="'+(l.temp ?? "")+'"></div>'+
           '<div class="feld"><label for="f-feuchte">Luftfeuchte %</label>'+
@@ -741,6 +830,56 @@
     el("f-wolken").addEventListener("input", himmelSchau);
     rechne(); himmelSchau();
 
+    /* Wetter automatisch holen */
+    let ortMerker = l.wetterOrt && letzterOrt && letzterOrt.name === l.wetterOrt ? letzterOrt : letzterOrt;
+    function stand(text, art){
+      const p = el("f-wetter-status");
+      p.textContent = text;
+      p.className = "status" + (art ? " " + art : "");
+    }
+    async function wetterAbrufen(){
+      const knopf = el("f-wetter-knopf");
+      const datum = el("f-datum").value;
+      if(!datum){ stand("Trag zuerst das Datum ein.", "warnung"); return; }
+      const eingabe = el("f-wetterort").value.trim();
+      if(!eingabe && !ortMerker){ stand("Trag einen Ort ein oder nimm deinen Standort.", "warnung"); return; }
+
+      knopf.disabled = true;
+      try{
+        if(!ortMerker || (eingabe && eingabe !== ortMerker.name)){
+          stand("Ort wird gesucht …");
+          ortMerker = await ortSuchen(eingabe);
+          el("f-wetterort").value = ortMerker.name;
+        }
+        stand("Wetter wird geholt …");
+        const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
+        const w = await wetterHolen(ortMerker, datum, el("f-zeit").value, sek);
+        el("f-temp").value = zahl(w.temp, 1);
+        el("f-feuchte").value = w.feuchte;
+        el("f-regen").value = w.regen === "" ? "" : zahl(w.regen, 1);
+        el("f-wolken").value = w.wolken;
+        himmelSchau();
+        letzterOrt = ortMerker;
+        try{ await Speicher.setze("laufbuch:ort", JSON.stringify(ortMerker)); }catch(e){}
+        stand((w.vorhersage ? "Vorhersage" : "Messwerte") + " für " + ortMerker.name +
+          (el("f-zeit").value ? " um " + el("f-zeit").value + " Uhr" : ", Tagesdurchschnitt") +
+          " eingetragen. Du kannst sie von Hand überschreiben.", "gut");
+      }catch(e){
+        stand(e.message + " Trag die Werte von Hand ein.", "warnung");
+      }finally{
+        knopf.disabled = false;
+      }
+    }
+    el("f-wetter-knopf").addEventListener("click", wetterAbrufen);
+    el("f-gps").addEventListener("click", async ()=>{
+      stand("Standort wird bestimmt …");
+      try{
+        ortMerker = await gpsHolen();
+        el("f-wetterort").value = ortMerker.name;
+        await wetterAbrufen();
+      }catch(e){ stand(e.message, "warnung"); }
+    });
+
     el("f-abbruch").addEventListener("click", schliesse);
     el("schleier").addEventListener("mousedown", (e)=>{ if(e.target.id === "schleier") schliesse(); });
     document.addEventListener("keydown", escTaste);
@@ -759,6 +898,8 @@
       const id = bearbeitung ? bearbeitung.id : "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
       const eintrag = {
         id, datum, km, sek,
+        zeit: el("f-zeit").value || "",
+        wetterOrt: el("f-wetterort").value.trim(),
         temp: zahlAus(el("f-temp").value) ?? "",
         feuchte: zahlAus(el("f-feuchte").value) ?? "",
         regen: zahlAus(el("f-regen").value) ?? "",
@@ -815,9 +956,9 @@
 
   function csv(){
     if(!laeufe.length){ meldung("Es gibt noch nichts auszugeben."); return; }
-    const kopf = ["Datum","Kilometer","Dauer","Tempo min/km","km/h","Temperatur C","Luftfeuchte %","Niederschlag mm","Bewoelkung %","Strecke","Notiz"];
+    const kopf = ["Datum","Startzeit","Kilometer","Dauer","Tempo min/km","km/h","Temperatur C","Luftfeuchte %","Niederschlag mm","Bewoelkung %","Strecke","Notiz"];
     const zeilen = laeufe.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(l=>[
-      l.datum, zahl(l.km,2), zeitText(l.sek), tempoText(tempoVon(l)),
+      l.datum, l.zeit || "", zahl(l.km,2), zeitText(l.sek), tempoText(tempoVon(l)),
       zahl(l.sek>0 ? l.km/(l.sek/3600) : 0, 2),
       l.temp ?? "", l.feuchte ?? "", l.regen ?? "", l.wolken ?? "",
       l.ort || "", (l.notiz||"").replace(/\s+/g," ")
@@ -882,7 +1023,11 @@
     ? "Daten liegen in diesem Artefakt"
     : "Daten liegen " + Speicher.name + " · Sicherung regelmäßig erstellen";
 
-  (async function(){ await ladeLaeufe(); alles(); })();
+  (async function(){
+    await ladeLaeufe();
+    try{ const o = await Speicher.hole("laufbuch:ort"); if(o) letzterOrt = JSON.parse(o); }catch(e){}
+    alles();
+  })();
 })();
 </script>
 </body>
