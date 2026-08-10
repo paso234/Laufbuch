@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Laufbuch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#d9e0df">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --tinte:#141c24;
+    --tinte-70:#5a6872;
+    --nebel:#d9e0df;
+    --karte:#f7f9f8;
+    --linie:#c2cccb;
+    --linie-fein:#e2e8e6;
+    --signal:#1f49e0;
+    --warm:#e0912b;
+    --kalt:#4d84c4;
+    --rot:#b3243c;
+    --r:3px;
+    --fs-mono:'IBM Plex Mono',ui-monospace,monospace;
+    --fs-sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    --fs-anzeige:'Anton',Impact,var(--fs-sans);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--nebel);
+    color:var(--tinte);
+    font-family:var(--fs-sans);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .huelle{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+
+  /* ---------- Kopf ---------- */
+  .kopf{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    border-bottom:2px solid var(--tinte);padding-bottom:12px}
+  .marke{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .marke h1{
+    font-family:var(--fs-anzeige);font-weight:400;font-size:clamp(34px,7vw,52px);
+    letter-spacing:.01em;margin:0;line-height:.9;text-transform:uppercase}
+  .augenbraue{font-family:var(--fs-mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--tinte-70)}
+
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+  .knopf-haupt{
+    background:var(--tinte);color:var(--karte);border:none;border-radius:var(--r);
+    padding:11px 20px;font-weight:600;letter-spacing:.01em;
+    display:inline-flex;align-items:center;gap:9px}
+  .knopf-haupt:hover{background:var(--signal)}
+  .knopf-haupt[disabled]{opacity:.5;cursor:default}
+  .knopf-haupt .plus{font-family:var(--fs-mono);font-size:17px;line-height:1}
+
+  .knopf-still{
+    background:none;border:1px solid var(--linie);border-radius:var(--r);
+    color:var(--tinte-70);padding:6px 12px;font-family:var(--fs-mono);
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .knopf-still:hover{border-color:var(--tinte);color:var(--tinte)}
+  .knopf-still.betont{background:var(--tinte);border-color:var(--tinte);color:var(--karte)}
+  .knopf-still.betont:hover{background:var(--signal);border-color:var(--signal);color:var(--karte)}
+  .knopf-still.gefahr:hover{border-color:var(--rot);color:var(--rot)}
+
+  /* ---------- Kennzahlen ---------- */
+  .kennzahlen{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--linie);border-bottom:1px solid var(--linie)}
+  .kz{background:var(--nebel);padding:15px 4px 13px}
+  .kz .wert{font-family:var(--fs-anzeige);font-size:clamp(23px,4.6vw,34px);line-height:1;
+    display:block;font-weight:400}
+  .kz .einheit{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);margin-left:3px}
+  .kz .titel{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--tinte-70);margin-top:7px;display:block}
+
+  /* ---------- Monatsstreifen ---------- */
+  .monate{display:flex;gap:3px;align-items:flex-end;height:56px;
+    padding:14px 0 0;border-bottom:1px solid var(--linie)}
+  .monat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:5px}
+  .monat .balken{background:var(--tinte);width:100%;min-height:1px;border-radius:1px 1px 0 0}
+  .monat.jetzt .balken{background:var(--signal)}
+  .monat .m-name{font-family:var(--fs-mono);font-size:9px;color:var(--tinte-70);
+    text-align:center;letter-spacing:.04em}
+
+  /* ---------- Werkzeugleiste ---------- */
+  .werkzeuge{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 0 10px}
+  select{
+    font-family:var(--fs-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    background:var(--karte);border:1px solid var(--linie);border-radius:var(--r);
+    padding:6px 8px;color:var(--tinte)}
+  .zaehler{margin-left:auto;font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);
+    letter-spacing:.08em;text-transform:uppercase}
+
+  /* ---------- Liste ---------- */
+  .kopfzeile,.zeile-raster{
+    display:grid;
+    grid-template-columns:74px minmax(150px,1fr) 82px 88px 128px 26px;
+    gap:14px;align-items:center}
+  .kopfzeile{padding:0 12px 7px;font-family:var(--fs-mono);font-size:9.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-70);
+    border-bottom:1px solid var(--tinte)}
+
+  .lauf{border-bottom:1px solid var(--linie-fein);background:transparent}
+  .lauf:hover{background:var(--karte)}
+  .lauf.offen{background:var(--karte)}
+  .zeile{width:100%;text-align:left;background:none;border:none;
+    padding:13px 12px;font:inherit;color:inherit}
+
+  .datum{font-family:var(--fs-mono);font-size:12px;line-height:1.25}
+  .datum .tag{display:block;font-weight:600}
+  .datum .wtag{color:var(--tinte-70);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+
+  /* Signaturelement: das Streckenband */
+  .band-feld{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .band{height:9px;background:var(--linie-fein);border-radius:1px;overflow:hidden}
+  .band i{display:block;height:100%;background:var(--tinte);border-radius:1px}
+  .lauf:hover .band i,.lauf.offen .band i{background:var(--signal)}
+  .band-zahl{font-family:var(--fs-mono);font-size:13px;font-weight:600}
+  .band-zahl span{font-weight:400;color:var(--tinte-70);font-size:11px}
+
+  .dauer{font-family:var(--fs-mono);font-size:13px}
+  .tempo{font-family:var(--fs-mono);font-size:16px;font-weight:600;letter-spacing:-.02em}
+  .tempo span{font-size:10px;font-weight:400;color:var(--tinte-70);letter-spacing:.06em}
+
+  .wetter{display:flex;align-items:center;gap:9px;font-family:var(--fs-mono);font-size:11.5px;
+    color:var(--tinte-70);white-space:nowrap}
+  .wetter b{font-weight:600;color:var(--tinte)}
+  .grad-punkt{width:8px;height:8px;border-radius:50%;flex:none}
+  .himmel{flex:none;display:block}
+
+  .bild-marke{font-family:var(--fs-mono);font-size:12px;color:var(--tinte-70);text-align:right}
+
+  /* ---------- Detail ---------- */
+  .detail{padding:2px 12px 22px;display:grid;grid-template-columns:1fr 260px;gap:22px}
+  .detail-daten{display:flex;flex-wrap:wrap;gap:20px 30px;align-items:flex-start}
+  .dd{min-width:74px}
+  .dd .k{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--tinte-70);display:block;margin-bottom:3px}
+  .dd .v{font-family:var(--fs-mono);font-size:14px;font-weight:500}
+  .notiz{flex-basis:100%;font-size:14px;max-width:52ch;border-left:2px solid var(--linie);
+    padding-left:12px;color:var(--tinte-70)}
+  .strecke-bild{width:100%;border:1px solid var(--linie);border-radius:var(--r);display:block;
+    background:var(--nebel)}
+  .bild-platz{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);
+    border:1px dashed var(--linie);border-radius:var(--r);padding:26px 10px;text-align:center}
+  .detail-aktionen{display:flex;gap:8px;margin-top:16px;flex-basis:100%}
+
+  /* ---------- Leerzustand / Meldungen ---------- */
+  .leer{padding:52px 14px;text-align:center}
+  .leer p{margin:0 0 6px;font-family:var(--fs-mono);font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--tinte-70)}
+  .leer h2{font-family:var(--fs-anzeige);font-weight:400;font-size:26px;margin:0 0 18px;
+    text-transform:uppercase;letter-spacing:.01em}
+  .meldung{border:1px solid var(--rot);border-left-width:3px;background:var(--karte);
+    padding:11px 14px;font-size:13.5px;border-radius:var(--r);margin:14px 0}
+
+  /* ---------- Formular ---------- */
+  .schleier{position:fixed;inset:0;background:rgba(20,28,36,.55);display:flex;
+    align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;z-index:40}
+  .blatt{background:var(--karte);width:100%;max-width:620px;border-radius:var(--r);
+    padding:22px 22px 20px;margin:auto 0}
+  .blatt h2{font-family:var(--fs-anzeige);font-weight:400;font-size:27px;margin:0 0 2px;
+    text-transform:uppercase;letter-spacing:.01em}
+  .blatt .untertitel{font-family:var(--fs-mono);font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--tinte-70);margin:0 0 18px}
+
+  .feldgruppe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+  .feld{display:flex;flex-direction:column;gap:5px;min-width:0}
+  .feld label,.legende{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--tinte-70)}
+  .feld input[type=text],.feld input[type=number],.feld input[type=date],.feld textarea{
+    font-family:var(--fs-mono);font-size:14px;padding:9px 10px;border:1px solid var(--linie);
+    border-radius:var(--r);background:#fff;color:var(--tinte);width:100%}
+  .feld textarea{font-family:var(--fs-sans);resize:vertical;min-height:62px}
+  .feld input:focus,.feld textarea:focus{border-color:var(--signal);outline:none}
+
+  .dauer-feld{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .abschnitt{border-top:1px solid var(--linie-fein);padding-top:14px;margin-top:4px}
+
+  .tempo-schau{background:var(--tinte);color:var(--karte);border-radius:var(--r);
+    padding:12px 16px;display:flex;align-items:baseline;gap:12px;margin:2px 0 16px}
+  .tempo-schau .gross{font-family:var(--fs-anzeige);font-size:31px;line-height:1}
+  .tempo-schau .klein{font-family:var(--fs-mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;opacity:.72}
+
+  .schieber{width:100%;accent-color:var(--signal)}
+  .himmel-zeile{display:flex;align-items:center;gap:10px}
+  .himmel-text{font-family:var(--fs-mono);font-size:11.5px;color:var(--tinte-70);
+    white-space:nowrap;min-width:104px}
+
+  .bild-feld{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .bild-vorschau{width:86px;height:64px;object-fit:cover;border:1px solid var(--linie);
+    border-radius:var(--r)}
+  input[type=file]{font-family:var(--fs-mono);font-size:11px;max-width:100%}
+
+  .blatt-fuss{display:flex;gap:10px;align-items:center;justify-content:flex-end;
+    border-top:1px solid var(--linie-fein);padding-top:15px;margin-top:6px;flex-wrap:wrap}
+  .fehler{color:var(--rot);font-family:var(--fs-mono);font-size:11.5px;margin-right:auto;
+    max-width:60%}
+
+  .fuss{margin-top:26px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    font-family:var(--fs-mono);font-size:10.5px;color:var(--tinte-70);letter-spacing:.06em}
+  .fuss .rest{margin-left:auto;text-align:right}
+
+  .laden{padding:46px 0;text-align:center;font-family:var(--fs-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-70)}
+
+  @media (max-width:720px){
+    .huelle{padding:16px 13px 48px}
+    .kennzahlen{grid-template-columns:repeat(2,1fr)}
+    .kopfzeile{display:none}
+    .zeile-raster{grid-template-columns:1fr auto;gap:8px 12px}
+    .zeile{padding:14px 10px}
+    .datum{grid-column:1;order:1}
+    .bild-marke{grid-column:2;order:2}
+    .band-feld{grid-column:1 / -1;order:3;margin-top:2px}
+    .dauer{order:4}
+    .tempo{order:5;text-align:right}
+    .wetter{grid-column:1 / -1;order:6;flex-wrap:wrap;white-space:normal}
+    .detail{grid-template-columns:1fr;gap:16px}
+    .feldgruppe{grid-template-columns:1fr 1fr}
+    .blatt{padding:18px 15px 16px}
+    .fuss .rest{margin-left:0;text-align:left;flex-basis:100%}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="huelle">
+  <header class="kopf">
+    <div class="marke">
+      <h1>Laufbuch</h1>
+      <span class="augenbraue" id="spanne">—</span>
+    </div>
+    <button class="knopf-haupt" id="neu-knopf"><span class="plus">+</span> Lauf eintragen</button>
+  </header>
+
+  <section class="kennzahlen" id="kennzahlen"></section>
+  <div class="monate" id="monate"></div>
+
+  <div class="werkzeuge">
+    <select id="jahr-filter" aria-label="Jahr filtern"></select>
+    <select id="sortierung" aria-label="Sortierung">
+      <option value="datum">Neueste zuerst</option>
+      <option value="datum-alt">Älteste zuerst</option>
+      <option value="km">Längste Strecke</option>
+      <option value="tempo">Schnellstes Tempo</option>
+    </select>
+    <span class="zaehler" id="zaehler"></span>
+  </div>
+
+  <div id="meldung-feld"></div>
+
+  <div class="kopfzeile" aria-hidden="true">
+    <span>Datum</span><span>Strecke</span><span>Dauer</span><span>Tempo</span><span>Wetter</span><span title="Zeile anklicken zum Bearbeiten">▾</span>
+  </div>
+
+  <main id="liste"><div class="laden">Laufbuch wird geladen …</div></main>
+
+  <footer class="fuss">
+    <button class="knopf-still" id="csv-knopf">CSV</button>
+    <button class="knopf-still" id="json-knopf">Sicherung erstellen</button>
+    <button class="knopf-still" id="import-knopf">Sicherung einlesen</button>
+    <input type="file" id="import-datei" accept="application/json,.json" hidden>
+    <span class="rest" id="hinweis"></span>
+  </footer>
+</div>
+
+<div id="formular-raum"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const SCHLUESSEL = "laufbuch:laeufe";
+  const BILD_PRAEFIX = "laufbuch:bild:";
+  const WTAGE = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+  const MONATE_KURZ = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+
+  let laeufe = [];
+  let offenerLauf = null;
+  let bildZwischen = {};
+  let bearbeitung = null;
+
+  /* ================= Speicher =================
+     Drei Wege, je nachdem wo die Datei läuft:
+     1. im Claude-Artefakt  -> window.storage
+     2. eigenständig        -> IndexedDB
+     3. Notnagel            -> localStorage                       */
+  const Speicher = (function(){
+    const claudeDa = typeof window.storage === "object" && window.storage
+      && typeof window.storage.get === "function";
+
+    if(claudeDa){
+      return {
+        art:"claude", name:"in diesem Artefakt",
+        async hole(k){ try{ const t = await window.storage.get(k,false); return t && t.value != null ? t.value : null; }catch(e){ return null; } },
+        async setze(k,v){ const t = await window.storage.set(k,v,false); if(!t) throw new Error("Speichern fehlgeschlagen"); },
+        async entferne(k){ try{ await window.storage.delete(k,false); }catch(e){} }
+      };
+    }
+
+    let db = null;
+    function idb(){
+      if(db) return Promise.resolve(db);
+      return new Promise((ok,fehl)=>{
+        const a = indexedDB.open("laufbuch", 1);
+        a.onupgradeneeded = ()=>{ if(!a.result.objectStoreNames.contains("werte")) a.result.createObjectStore("werte"); };
+        a.onsuccess = ()=>{ db = a.result; ok(db); };
+        a.onerror = ()=>fehl(a.error);
+      });
+    }
+    function idbLauf(modus, arbeit){
+      return idb().then(d=>new Promise((ok,fehl)=>{
+        const t = d.transaction("werte", modus);
+        const anfrage = arbeit(t.objectStore("werte"));
+        anfrage.onsuccess = ()=>ok(anfrage.result);
+        anfrage.onerror = ()=>fehl(anfrage.error);
+      }));
+    }
+
+    if(typeof indexedDB !== "undefined" && indexedDB){
+      return {
+        art:"idb", name:"in diesem Browser",
+        async hole(k){ try{ const v = await idbLauf("readonly", s=>s.get(k)); return v == null ? null : v; }catch(e){ return null; } },
+        async setze(k,v){ await idbLauf("readwrite", s=>s.put(v,k)); },
+        async entferne(k){ try{ await idbLauf("readwrite", s=>s.delete(k)); }catch(e){} }
+      };
+    }
+
+    return {
+      art:"ls", name:"in diesem Browser",
+      async hole(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+      async setze(k,v){ localStorage.setItem(k,v); },
+      async entferne(k){ try{ localStorage.removeItem(k); }catch(e){} }
+    };
+  })();
+
+  /* ---------- Helfer ---------- */
+  const el = (id) => document.getElementById(id);
+  const sichern = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const zahl = (n, dez=1) => Number(n).toFixed(dez).replace(".", ",");
+
+  function zeitText(sek){
+    sek = Math.round(sek);
+    const h = Math.floor(sek/3600), m = Math.floor((sek%3600)/60), s = sek%60;
+    const p = (v)=>String(v).padStart(2,"0");
+    return h > 0 ? h+":"+p(m)+":"+p(s) : m+":"+p(s);
+  }
+  function stundenText(sek){
+    const h = Math.floor(sek/3600), m = Math.round((sek%3600)/60);
+    return (m === 60 ? (h+1)+":00" : h+":"+String(m).padStart(2,"0"));
+  }
+  function tempoText(sekProKm){
+    if(!isFinite(sekProKm) || sekProKm <= 0) return "—";
+    const m = Math.floor(sekProKm/60), s = Math.round(sekProKm%60);
+    return (s === 60 ? (m+1)+":00" : m+":"+String(s).padStart(2,"0"));
+  }
+  const tempoVon = (l) => l.km > 0 ? l.sek / l.km : Infinity;
+  const alsDatum = (iso) => new Date(iso + "T12:00:00");
+
+  function datumText(iso){
+    const d = alsDatum(iso);
+    return { tag: String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+String(d.getFullYear()).slice(2),
+             wtag: WTAGE[d.getDay()] };
+  }
+  function tempFarbe(t){
+    if(t == null || t === "") return "var(--linie)";
+    const v = Math.max(-10, Math.min(32, Number(t)));
+    const anteil = (v + 10) / 42;
+    return anteil < .5 ? "var(--kalt)" : anteil < .72 ? "#8aa87a" : "var(--warm)";
+  }
+  function himmelName(w){
+    if(w == null || w === "") return "";
+    w = Number(w);
+    if(w < 12) return "klar";
+    if(w < 40) return "heiter";
+    if(w < 75) return "bewölkt";
+    return "bedeckt";
+  }
+  function himmelGlyph(wolken, regen){
+    const w = wolken === "" || wolken == null ? 0 : Number(wolken);
+    const r = Number(regen) > 0;
+    const sonne = w < 40 ? '<circle cx="6" cy="6" r="3.6" fill="var(--warm)"/>' : "";
+    const wolke = w >= 12 ? '<path d="M5.5 13.5h8a2.6 2.6 0 0 0 .2-5.2 3.6 3.6 0 0 0-6.9-.7A2.7 2.7 0 0 0 5.5 13.5z" fill="'+(w>=75?"var(--tinte-70)":"var(--linie)")+'"/>' : "";
+    const tropfen = r ? '<path d="M7 15.4v2.6M11 15.4v2.6M15 15.4v2.6" stroke="var(--signal)" stroke-width="1.6" stroke-linecap="round"/>' : "";
+    return '<svg class="himmel" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">'+sonne+wolke+tropfen+"</svg>";
+  }
+  function meldung(text){
+    el("meldung-feld").innerHTML = text ? '<div class="meldung">'+sichern(text)+"</div>" : "";
+  }
+
+  /* ---------- Daten laden und sichern ---------- */
+  async function ladeLaeufe(){
+    const roh = await Speicher.hole(SCHLUESSEL);
+    try{ laeufe = roh ? JSON.parse(roh) : []; }catch(e){ laeufe = []; }
+    if(!Array.isArray(laeufe)) laeufe = [];
+  }
+  async function speichereLaeufe(){
+    try{ await Speicher.setze(SCHLUESSEL, JSON.stringify(laeufe)); return true; }
+    catch(e){ meldung("Der Eintrag ließ sich nicht speichern. Versuch es noch einmal."); return false; }
+  }
+  async function ladeBild(id){
+    if(bildZwischen[id] !== undefined) return bildZwischen[id];
+    bildZwischen[id] = await Speicher.hole(BILD_PRAEFIX + id);
+    return bildZwischen[id];
+  }
+
+  /* ---------- Bildverarbeitung ---------- */
+  function verkleinern(quelle, maxKante, guete){
+    return new Promise((ok, fehl)=>{
+      const arbeite = (datenUrl)=>{
+        const bild = new Image();
+        bild.onerror = ()=>fehl(new Error("Dieses Bildformat wird nicht unterstützt."));
+        bild.onload = ()=>{
+          let b = bild.width, h = bild.height;
+          const f = Math.min(1, maxKante / Math.max(b, h));
+          b = Math.max(1, Math.round(b*f)); h = Math.max(1, Math.round(h*f));
+          const c = document.createElement("canvas");
+          c.width = b; c.height = h;
+          c.getContext("2d").drawImage(bild, 0, 0, b, h);
+          ok(c.toDataURL("image/jpeg", guete));
+        };
+        bild.src = datenUrl;
+      };
+      if(typeof quelle === "string") return arbeite(quelle);
+      const leser = new FileReader();
+      leser.onerror = ()=>fehl(new Error("Die Datei ließ sich nicht lesen."));
+      leser.onload = ()=>arbeite(leser.result);
+      leser.readAsDataURL(quelle);
+    });
+  }
+
+  /* ---------- Kennzahlen ---------- */
+  function zeitraum(basis){
+    // Spanne vom ersten Lauf bis heute (bzw. bis Jahresende bei Jahresfilter)
+    const daten = basis.map(l=>alsDatum(l.datum).getTime()).sort((a,b)=>a-b);
+    const start = daten[0];
+    const heute = Date.now();
+    const jahr = el("jahr-filter").value;
+    let ende = heute;
+    if(jahr !== "alle"){
+      const jahresEnde = new Date(Number(jahr), 11, 31, 12).getTime();
+      ende = Math.min(heute, jahresEnde);
+    }
+    ende = Math.max(ende, daten[daten.length-1]);
+    const tage = (ende - start) / 86400000 + 1;
+    return { tage: Math.max(1, tage), wochen: Math.max(1, tage/7), monate: Math.max(1, tage/30.4375) };
+  }
+
+  function zeichneKennzahlen(){
+    const basis = gefiltert();
+    const n = basis.length;
+    const kmGesamt = basis.reduce((s,l)=>s+l.km, 0);
+    const sekGesamt = basis.reduce((s,l)=>s+l.sek, 0);
+    const schnitt = kmGesamt > 0 ? sekGesamt / kmGesamt : Infinity;
+    const bester = n ? Math.min.apply(null, basis.map(tempoVon)) : Infinity;
+    const sp = n ? zeitraum(basis) : {wochen:1, monate:1};
+
+    const felder = [
+      [zahl(kmGesamt,1), "km", "Gesamtstrecke"],
+      [n ? stundenText(sekGesamt) : "—", "h", "Gesamtdauer"],
+      [String(n), "", n === 1 ? "Lauf" : "Läufe"],
+      [n ? zahl(kmGesamt/n,1) : "—", "km", "Ø je Lauf"],
+      [n ? zahl(kmGesamt/sp.wochen,1) : "—", "km", "Ø je Woche"],
+      [n ? zahl(kmGesamt/sp.monate,1) : "—", "km", "Ø je Monat"],
+      [tempoText(schnitt), "min/km", "Schnitt-Tempo"],
+      [tempoText(bester), "min/km", "Bestes Tempo"]
+    ];
+    el("kennzahlen").innerHTML = felder.map(([w,e,t])=>
+      '<div class="kz"><span class="wert">'+w+(e ? '<span class="einheit">'+e+"</span>" : "")+"</span>"+
+      '<span class="titel">'+t+"</span></div>").join("");
+
+    const jahr = el("jahr-filter").value;
+    if(!laeufe.length){ el("spanne").textContent = "noch leer"; return; }
+    if(jahr !== "alle"){ el("spanne").textContent = jahr; return; }
+    const jahre = laeufe.map(l=>l.datum.slice(0,4)).sort();
+    el("spanne").textContent = jahre[0] === jahre[jahre.length-1]
+      ? jahre[0] : jahre[0]+"–"+jahre[jahre.length-1];
+  }
+
+  function zeichneMonate(){
+    const heute = new Date();
+    const koerbe = [];
+    for(let i = 11; i >= 0; i--){
+      const d = new Date(heute.getFullYear(), heute.getMonth()-i, 1);
+      koerbe.push({ j: d.getFullYear(), m: d.getMonth(), km: 0 });
+    }
+    laeufe.forEach(l=>{
+      const d = alsDatum(l.datum);
+      const k = koerbe.find(x=>x.j === d.getFullYear() && x.m === d.getMonth());
+      if(k) k.km += l.km;
+    });
+    const max = Math.max(1, ...koerbe.map(k=>k.km));
+    el("monate").innerHTML = koerbe.map((k,i)=>
+      '<div class="monat'+(i === 11 ? " jetzt" : "")+'" title="'+MONATE_KURZ[k.m]+" "+k.j+": "+zahl(k.km,1)+' km">'+
+        '<div class="balken" style="height:'+(k.km/max*100)+'%"></div>'+
+        '<span class="m-name">'+MONATE_KURZ[k.m]+"</span></div>").join("");
+  }
+
+  /* ---------- Liste ---------- */
+  function gefiltert(){
+    const jahr = el("jahr-filter").value;
+    let l = jahr === "alle" ? laeufe.slice() : laeufe.filter(x=>x.datum.slice(0,4) === jahr);
+    const s = el("sortierung").value;
+    if(s === "datum") l.sort((a,b)=>b.datum.localeCompare(a.datum));
+    if(s === "datum-alt") l.sort((a,b)=>a.datum.localeCompare(b.datum));
+    if(s === "km") l.sort((a,b)=>b.km - a.km);
+    if(s === "tempo") l.sort((a,b)=>tempoVon(a) - tempoVon(b));
+    return l;
+  }
+
+  function fuelleJahre(){
+    const w = el("jahr-filter"), alt = w.value;
+    const jahre = Array.from(new Set(laeufe.map(l=>l.datum.slice(0,4)))).sort().reverse();
+    w.innerHTML = '<option value="alle">Alle Jahre</option>' +
+      jahre.map(j=>'<option value="'+j+'">'+j+"</option>").join("");
+    if(alt && Array.from(w.options).some(o=>o.value === alt)) w.value = alt;
+  }
+
+  function wetterTeil(l){
+    const hat = [l.temp, l.feuchte, l.regen, l.wolken].some(v=>v !== "" && v != null);
+    if(!hat) return '<span class="wetter">—</span>';
+    let s = '<span class="wetter">';
+    s += '<span class="grad-punkt" style="background:'+tempFarbe(l.temp)+'"></span>';
+    if(l.temp !== "" && l.temp != null) s += "<b>"+zahl(l.temp,0)+"°</b>";
+    if(l.feuchte !== "" && l.feuchte != null) s += "<span>"+Math.round(l.feuchte)+"%</span>";
+    if(l.regen !== "" && l.regen != null && Number(l.regen) > 0) s += "<span>"+zahl(l.regen,1)+"&thinsp;mm</span>";
+    s += himmelGlyph(l.wolken, l.regen);
+    return s + "</span>";
+  }
+
+  function zeichneListe(){
+    const liste = el("liste");
+    const daten = gefiltert();
+    el("zaehler").textContent = daten.length
+      ? daten.length + (daten.length === 1 ? " Eintrag" : " Einträge") : "";
+
+    if(!laeufe.length){
+      liste.innerHTML =
+        '<div class="leer"><p>Noch kein Eintrag</p><h2>Der erste Lauf fehlt</h2>'+
+        '<button class="knopf-haupt" id="leer-knopf"><span class="plus">+</span> Lauf eintragen</button>'+
+        '<p style="margin-top:20px">Später klappst du jede Zeile per Klick auf, um sie zu ändern oder zu löschen</p></div>';
+      el("leer-knopf").addEventListener("click", ()=>oeffneFormular(null));
+      return;
+    }
+    if(!daten.length){
+      liste.innerHTML = '<div class="leer"><p>Kein Treffer</p><h2>In diesem Jahr steht nichts</h2></div>';
+      return;
+    }
+
+    const maxKm = Math.max.apply(null, daten.map(l=>l.km));
+    liste.innerHTML = daten.map(l=>{
+      const d = datumText(l.datum);
+      const breite = Math.max(5, l.km / maxKm * 100);
+      return '<article class="lauf'+(offenerLauf === l.id ? " offen" : "")+'" data-id="'+l.id+'">'+
+        '<button class="zeile zeile-raster" aria-expanded="'+(offenerLauf === l.id)+'">'+
+          '<span class="datum"><span class="tag">'+d.tag+'</span><span class="wtag">'+d.wtag+"</span></span>"+
+          '<span class="band-feld"><span class="band-zahl">'+zahl(l.km,2)+' <span>km</span></span>'+
+            '<span class="band"><i style="width:'+breite+'%"></i></span></span>'+
+          '<span class="dauer">'+zeitText(l.sek)+"</span>"+
+          '<span class="tempo">'+tempoText(tempoVon(l))+' <span>/km</span></span>'+
+          wetterTeil(l)+
+          '<span class="bild-marke">'+(l.hatBild ? "▣" : "")+"</span>"+
+        "</button>"+
+        (offenerLauf === l.id ? detailHtml(l) : "")+
+      "</article>";
+    }).join("");
+
+    liste.querySelectorAll(".lauf").forEach(karte=>{
+      const id = karte.dataset.id;
+      karte.querySelector(".zeile").addEventListener("click", ()=>{
+        offenerLauf = offenerLauf === id ? null : id;
+        zeichneListe();
+        if(offenerLauf === id) zeigeBild(id);
+      });
+      const b = karte.querySelector("[data-bearbeiten]");
+      if(b) b.addEventListener("click", ()=>oeffneFormular(laeufe.find(x=>x.id === id)));
+      const w = karte.querySelector("[data-loeschen]");
+      if(w) w.addEventListener("click", ()=>loesche(id));
+    });
+  }
+
+  function detailHtml(l){
+    const km_h = l.sek > 0 ? l.km / (l.sek/3600) : 0;
+    const felder = [
+      ["Geschwindigkeit", zahl(km_h,2)+" km/h"],
+      ["Dauer", zeitText(l.sek)+" h"],
+      l.ort ? ["Strecke", sichern(l.ort)] : null,
+      l.temp !== "" && l.temp != null ? ["Temperatur", zahl(l.temp,1)+" °C"] : null,
+      l.feuchte !== "" && l.feuchte != null ? ["Luftfeuchte", Math.round(l.feuchte)+" %"] : null,
+      l.regen !== "" && l.regen != null ? ["Niederschlag", zahl(l.regen,1)+" mm"] : null,
+      l.wolken !== "" && l.wolken != null ? ["Bewölkung", Math.round(l.wolken)+" % · "+himmelName(l.wolken)] : null
+    ].filter(Boolean);
+
+    return '<div class="detail">'+
+      '<div class="detail-daten">'+
+        felder.map(([k,v])=>'<div class="dd"><span class="k">'+k+'</span><span class="v">'+v+"</span></div>").join("")+
+        (l.notiz ? '<p class="notiz">'+sichern(l.notiz)+"</p>" : "")+
+        '<div class="detail-aktionen">'+
+          '<button class="knopf-still betont" data-bearbeiten>Lauf bearbeiten</button>'+
+          '<button class="knopf-still gefahr" data-loeschen>Lauf löschen</button>'+
+        "</div>"+
+      "</div>"+
+      '<div class="detail-bild" data-bildfeld>'+
+        (l.hatBild ? '<div class="bild-platz">Bild wird geladen …</div>'
+                   : '<div class="bild-platz">Kein Streckenbild hinterlegt</div>')+
+      "</div></div>";
+  }
+
+  async function zeigeBild(id){
+    const lauf = laeufe.find(l=>l.id === id);
+    if(!lauf || !lauf.hatBild) return;
+    const feld = document.querySelector('.lauf[data-id="'+id+'"] [data-bildfeld]');
+    if(!feld) return;
+    const daten = await ladeBild(id);
+    if(offenerLauf !== id) return;
+    feld.innerHTML = daten
+      ? '<img class="strecke-bild" src="'+daten+'" alt="Streckenbild vom Lauf am '+datumText(lauf.datum).tag+'">'
+      : '<div class="bild-platz">Bild nicht gefunden</div>';
+  }
+
+  async function loesche(id){
+    const l = laeufe.find(x=>x.id === id);
+    if(!l) return;
+    if(!confirm("Diesen Lauf vom "+datumText(l.datum).tag+" löschen? Das lässt sich nicht rückgängig machen.")) return;
+    laeufe = laeufe.filter(x=>x.id !== id);
+    offenerLauf = null;
+    delete bildZwischen[id];
+    await Speicher.entferne(BILD_PRAEFIX + id);
+    await speichereLaeufe();
+    alles();
+  }
+
+  /* ---------- Formular ---------- */
+  function oeffneFormular(lauf){
+    bearbeitung = lauf || null;
+    const l = lauf || {};
+    const h = Math.floor((l.sek||0)/3600), m = Math.floor(((l.sek||0)%3600)/60), s = (l.sek||0)%60;
+    const heute = new Date().toISOString().slice(0,10);
+
+    el("formular-raum").innerHTML =
+    '<div class="schleier" id="schleier"><div class="blatt" role="dialog" aria-modal="true" aria-label="Lauf eintragen">'+
+      "<h2>"+(lauf ? "Lauf bearbeiten" : "Lauf eintragen")+"</h2>"+
+      '<p class="untertitel">Datum, Distanz und Dauer genügen</p>'+
+
+      '<div class="feldgruppe">'+
+        '<div class="feld"><label for="f-datum">Datum</label>'+
+          '<input type="date" id="f-datum" value="'+(l.datum||heute)+'"></div>'+
+        '<div class="feld"><label for="f-km">Distanz in km</label>'+
+          '<input type="text" inputmode="decimal" id="f-km" placeholder="10,4" value="'+(l.km != null ? zahl(l.km,2) : "")+'"></div>'+
+        '<div class="feld"><span class="legende">Dauer std / min / sek</span>'+
+          '<div class="dauer-feld">'+
+            '<input type="number" id="f-h" min="0" placeholder="0" value="'+(lauf ? h : "")+'" aria-label="Stunden">'+
+            '<input type="number" id="f-m" min="0" max="59" placeholder="52" value="'+(lauf ? m : "")+'" aria-label="Minuten">'+
+            '<input type="number" id="f-s" min="0" max="59" placeholder="00" value="'+(lauf ? s : "")+'" aria-label="Sekunden">'+
+          "</div></div>"+
+      "</div>"+
+
+      '<div class="tempo-schau"><span class="gross" id="f-tempo">—</span>'+
+        '<span class="klein">min/km</span>'+
+        '<span class="gross" id="f-kmh" style="margin-left:auto">—</span>'+
+        '<span class="klein">km/h</span></div>'+
+
+      '<div class="abschnitt"><span class="legende">Wetterbedingungen</span>'+
+        '<div class="feldgruppe" style="margin-top:9px">'+
+          '<div class="feld"><label for="f-temp">Temperatur °C</label>'+
+            '<input type="text" inputmode="decimal" id="f-temp" placeholder="14" value="'+(l.temp ?? "")+'"></div>'+
+          '<div class="feld"><label for="f-feuchte">Luftfeuchte %</label>'+
+            '<input type="number" id="f-feuchte" min="0" max="100" placeholder="72" value="'+(l.feuchte ?? "")+'"></div>'+
+          '<div class="feld"><label for="f-regen">Niederschlag mm</label>'+
+            '<input type="text" inputmode="decimal" id="f-regen" placeholder="0" value="'+(l.regen ?? "")+'"></div>'+
+        "</div>"+
+        '<div class="feld"><label for="f-wolken">Bewölkung</label>'+
+          '<div class="himmel-zeile">'+
+            '<input type="range" class="schieber" id="f-wolken" min="0" max="100" step="5" value="'+(l.wolken ?? 40)+'">'+
+            '<span class="himmel-text" id="f-himmel"></span></div></div>'+
+      "</div>"+
+
+      '<div class="abschnitt">'+
+        '<div class="feld"><label for="f-ort">Strecke oder Ort</label>'+
+          '<input type="text" id="f-ort" placeholder="Runde um den Bötzsee" value="'+sichern(l.ort||"")+'"></div>'+
+        '<div class="feld" style="margin-top:12px"><label for="f-bild">Bild der Laufstrecke</label>'+
+          '<div class="bild-feld">'+
+            '<input type="file" id="f-bild" accept="image/*">'+
+            '<span id="f-bild-schau"></span></div></div>'+
+        '<div class="feld" style="margin-top:12px"><label for="f-notiz">Notiz</label>'+
+          '<textarea id="f-notiz" placeholder="Wie lief es?">'+sichern(l.notiz||"")+"</textarea></div>"+
+      "</div>"+
+
+      '<div class="blatt-fuss"><span class="fehler" id="f-fehler"></span>'+
+        '<button class="knopf-still" id="f-abbruch">Abbrechen</button>'+
+        '<button class="knopf-haupt" id="f-sichern">Eintrag sichern</button></div>'+
+    "</div></div>";
+
+    let neuesBild = undefined;
+    const schau = el("f-bild-schau");
+
+    function bildSchau(quelle){
+      schau.innerHTML = quelle
+        ? '<img class="bild-vorschau" src="'+quelle+'" alt="Vorschau des Streckenbilds"> '+
+          '<button class="knopf-still" type="button" id="f-bild-weg">Entfernen</button>'
+        : "";
+      const w = el("f-bild-weg");
+      if(w) w.addEventListener("click", ()=>{ neuesBild = null; el("f-bild").value = ""; bildSchau(null); });
+    }
+    if(lauf && lauf.thumb) bildSchau(lauf.thumb);
+
+    el("f-bild").addEventListener("change", async (ev)=>{
+      const datei = ev.target.files && ev.target.files[0];
+      if(!datei) return;
+      el("f-fehler").textContent = "";
+      try{ neuesBild = await verkleinern(datei, 1400, .78); bildSchau(neuesBild); }
+      catch(e){ el("f-fehler").textContent = e.message; ev.target.value = ""; }
+    });
+
+    function zahlAus(wert){
+      const t = String(wert).trim().replace(",", ".");
+      if(t === "") return null;
+      const n = Number(t);
+      return isFinite(n) ? n : null;
+    }
+    function rechne(){
+      const km = zahlAus(el("f-km").value) || 0;
+      const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
+      el("f-tempo").textContent = km > 0 && sek > 0 ? tempoText(sek/km) : "—";
+      el("f-kmh").textContent = km > 0 && sek > 0 ? zahl(km/(sek/3600),1) : "—";
+    }
+    function himmelSchau(){
+      const v = el("f-wolken").value;
+      el("f-himmel").textContent = v+" % · "+himmelName(v);
+    }
+    ["f-km","f-h","f-m","f-s"].forEach(i=>el(i).addEventListener("input", rechne));
+    el("f-wolken").addEventListener("input", himmelSchau);
+    rechne(); himmelSchau();
+
+    el("f-abbruch").addEventListener("click", schliesse);
+    el("schleier").addEventListener("mousedown", (e)=>{ if(e.target.id === "schleier") schliesse(); });
+    document.addEventListener("keydown", escTaste);
+
+    el("f-sichern").addEventListener("click", async ()=>{
+      const datum = el("f-datum").value;
+      const km = zahlAus(el("f-km").value);
+      const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
+      const fehler = el("f-fehler");
+      if(!datum){ fehler.textContent = "Trag ein Datum ein."; return; }
+      if(!km || km <= 0){ fehler.textContent = "Trag die Distanz in Kilometern ein."; return; }
+      if(sek <= 0){ fehler.textContent = "Trag die Dauer ein."; return; }
+      fehler.textContent = "";
+      el("f-sichern").disabled = true;
+
+      const id = bearbeitung ? bearbeitung.id : "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+      const eintrag = {
+        id, datum, km, sek,
+        temp: zahlAus(el("f-temp").value) ?? "",
+        feuchte: zahlAus(el("f-feuchte").value) ?? "",
+        regen: zahlAus(el("f-regen").value) ?? "",
+        wolken: Number(el("f-wolken").value),
+        ort: el("f-ort").value.trim(),
+        notiz: el("f-notiz").value.trim(),
+        thumb: bearbeitung ? bearbeitung.thumb || null : null,
+        hatBild: bearbeitung ? !!bearbeitung.hatBild : false
+      };
+
+      if(neuesBild === null){
+        eintrag.thumb = null; eintrag.hatBild = false;
+        delete bildZwischen[id];
+        await Speicher.entferne(BILD_PRAEFIX + id);
+      }else if(typeof neuesBild === "string"){
+        try{ eintrag.thumb = await verkleinern(neuesBild, 200, .5); }catch(e){ eintrag.thumb = null; }
+        eintrag.hatBild = true;
+        bildZwischen[id] = neuesBild;
+        try{ await Speicher.setze(BILD_PRAEFIX + id, neuesBild); }
+        catch(e){
+          eintrag.hatBild = false; delete bildZwischen[id];
+          fehler.textContent = "Das Bild ließ sich nicht speichern, der Lauf wird ohne Bild gesichert.";
+        }
+      }
+
+      if(bearbeitung) laeufe = laeufe.map(l=>l.id === id ? eintrag : l);
+      else laeufe.push(eintrag);
+
+      const ok = await speichereLaeufe();
+      el("f-sichern").disabled = false;
+      if(!ok) return;
+      schliesse();
+      alles();
+    });
+
+    setTimeout(()=>el("f-km").focus(), 30);
+  }
+
+  function escTaste(e){ if(e.key === "Escape") schliesse(); }
+  function schliesse(){
+    el("formular-raum").innerHTML = "";
+    document.removeEventListener("keydown", escTaste);
+    bearbeitung = null;
+  }
+
+  /* ---------- Ausgabe und Sicherung ---------- */
+  function datenAbladen(inhalt, typ, name){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([inhalt], {type:typ}));
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  }
+
+  function csv(){
+    if(!laeufe.length){ meldung("Es gibt noch nichts auszugeben."); return; }
+    const kopf = ["Datum","Kilometer","Dauer","Tempo min/km","km/h","Temperatur C","Luftfeuchte %","Niederschlag mm","Bewoelkung %","Strecke","Notiz"];
+    const zeilen = laeufe.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(l=>[
+      l.datum, zahl(l.km,2), zeitText(l.sek), tempoText(tempoVon(l)),
+      zahl(l.sek>0 ? l.km/(l.sek/3600) : 0, 2),
+      l.temp ?? "", l.feuchte ?? "", l.regen ?? "", l.wolken ?? "",
+      l.ort || "", (l.notiz||"").replace(/\s+/g," ")
+    ]);
+    const text = [kopf, ...zeilen].map(r=>r.map(z=>'"'+String(z).replace(/"/g,'""')+'"').join(";")).join("\r\n");
+    datenAbladen("\ufeff"+text, "text/csv;charset=utf-8", "laufbuch.csv");
+  }
+
+  async function sicherung(){
+    if(!laeufe.length){ meldung("Es gibt noch nichts zu sichern."); return; }
+    const knopf = el("json-knopf");
+    knopf.disabled = true; knopf.textContent = "Sammelt Bilder …";
+    const bilder = {};
+    for(const l of laeufe){ if(l.hatBild){ const b = await ladeBild(l.id); if(b) bilder[l.id] = b; } }
+    datenAbladen(JSON.stringify({ art:"laufbuch", fassung:1, erstellt:new Date().toISOString(), laeufe, bilder }),
+      "application/json", "laufbuch-sicherung-"+new Date().toISOString().slice(0,10)+".json");
+    knopf.disabled = false; knopf.textContent = "Sicherung erstellen";
+  }
+
+  async function einlesen(datei){
+    let daten;
+    try{ daten = JSON.parse(await datei.text()); }
+    catch(e){ meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); return; }
+    if(!daten || daten.art !== "laufbuch" || !Array.isArray(daten.laeufe)){
+      meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); return;
+    }
+    if(!confirm("Sicherung einlesen? Vorhandene Einträge mit gleichem Datum und gleicher Distanz werden nicht doppelt angelegt.")) return;
+
+    const kennung = new Set(laeufe.map(l=>l.datum+"|"+l.km+"|"+l.sek));
+    let neu = 0;
+    for(const l of daten.laeufe){
+      if(!l || !l.datum || !l.km) continue;
+      const k = l.datum+"|"+l.km+"|"+l.sek;
+      if(kennung.has(k)) continue;
+      kennung.add(k);
+      laeufe.push(l);
+      neu++;
+      const bild = daten.bilder && daten.bilder[l.id];
+      if(bild){ try{ await Speicher.setze(BILD_PRAEFIX + l.id, bild); bildZwischen[l.id] = bild; }catch(e){} }
+    }
+    await speichereLaeufe();
+    meldung(neu ? neu+(neu === 1 ? " Lauf wurde" : " Läufe wurden")+" eingelesen." : "Alle Einträge waren schon vorhanden.");
+    alles();
+  }
+
+  /* ---------- Start ---------- */
+  function alles(){ fuelleJahre(); zeichneKennzahlen(); zeichneMonate(); zeichneListe(); }
+
+  el("neu-knopf").addEventListener("click", ()=>oeffneFormular(null));
+  el("csv-knopf").addEventListener("click", csv);
+  el("json-knopf").addEventListener("click", sicherung);
+  el("import-knopf").addEventListener("click", ()=>el("import-datei").click());
+  el("import-datei").addEventListener("change", (e)=>{
+    const d = e.target.files && e.target.files[0];
+    if(d) einlesen(d);
+    e.target.value = "";
+  });
+  el("jahr-filter").addEventListener("change", ()=>{ offenerLauf = null; zeichneKennzahlen(); zeichneListe(); });
+  el("sortierung").addEventListener("change", ()=>{ offenerLauf = null; zeichneListe(); });
+
+  el("hinweis").textContent = Speicher.art === "claude"
+    ? "Daten liegen in diesem Artefakt"
+    : "Daten liegen " + Speicher.name + " · Sicherung regelmäßig erstellen";
+
+  (async function(){ await ladeLaeufe(); alles(); })();
+})();
+</script>
+</body>
+</html>
