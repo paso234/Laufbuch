@@ -140,7 +140,14 @@
   .dd .v{font-family:var(--fs-mono);font-size:14px;font-weight:500}
   .notiz{flex-basis:100%;font-size:14px;max-width:52ch;border-left:2px solid var(--linie);
     padding-left:12px;color:var(--tinte-70)}
-  .strecke-bild{width:100%;border:1px solid var(--linie);border-radius:var(--r);display:block;background:var(--nebel)}
+  .strecke-bild{width:100%;border:1px solid var(--linie);border-radius:var(--r);display:block;background:var(--nebel);cursor:zoom-in}
+  .licht{position:fixed;inset:0;background:rgba(20,28,36,.86);display:flex;
+    align-items:center;justify-content:center;padding:24px;z-index:50;cursor:zoom-out}
+  .licht img{max-width:100%;max-height:100%;border-radius:var(--r);
+    box-shadow:0 12px 40px rgba(0,0,0,.4);cursor:default}
+  .licht .licht-zu{position:absolute;top:18px;right:22px;background:none;border:none;
+    color:#fff;font-family:var(--fs-mono);font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;padding:8px 10px;cursor:pointer}
   .bild-platz{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);
     border:1px dashed var(--linie);border-radius:var(--r);padding:26px 10px;text-align:center}
   .detail-aktionen{display:flex;gap:8px;margin-top:16px;flex-basis:100%}
@@ -773,9 +780,20 @@ async function zeigeBild(l){
   if(!feld) return;
   const url = await bildLink(l);
   if(offenerLauf !== l.id) return;
-  feld.innerHTML = url
-    ? '<img class="strecke-bild" src="'+url+'" alt="Streckenbild vom Lauf am '+datumText(l.datum).tag+'">'
-    : '<div class="bild-platz">Bild nicht abrufbar</div>';
+  if(!url){ feld.innerHTML = '<div class="bild-platz">Bild nicht abrufbar</div>'; return; }
+  const alt = "Streckenbild vom Lauf am "+datumText(l.datum).tag;
+  feld.innerHTML = '<img class="strecke-bild" src="'+url+'" alt="'+alt+'">';
+  feld.querySelector("img").addEventListener("click", ()=>lichtZeigen(url, alt));
+}
+function lichtZeigen(url, alt){
+  const d = document.createElement("div");
+  d.className = "licht";
+  d.innerHTML = '<button class="licht-zu" type="button">Schließen</button><img src="'+url+'" alt="'+alt+'">';
+  const zu = ()=>{ d.remove(); document.removeEventListener("keydown", taste); };
+  const taste = (e)=>{ if(e.key === "Escape") zu(); };
+  d.addEventListener("click", (e)=>{ if(e.target === d || e.target.closest(".licht-zu")) zu(); });
+  document.addEventListener("keydown", taste);
+  document.body.appendChild(d);
 }
 
 /* ================= Freunde ================= */
