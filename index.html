@@ -5,137 +5,133 @@
 <title>Laufbuch</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#d9e0df">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="referrer" content="no-referrer">
 
 <style>
+  /* Schriften liegen auf deinem eigenen Speicherplatz, nicht bei Google.
+     Fehlen die Dateien im Ordner "fonts", greifen die Systemschriften. */
+  @font-face{font-family:'Anton';src:url('fonts/anton.woff2') format('woff2');font-display:swap}
+  @font-face{font-family:'Plex Sans';src:url('fonts/plex-sans.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Plex Sans';src:url('fonts/plex-sans-600.woff2') format('woff2');font-weight:600;font-display:swap}
+  @font-face{font-family:'Plex Mono';src:url('fonts/plex-mono.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Plex Mono';src:url('fonts/plex-mono-600.woff2') format('woff2');font-weight:600;font-display:swap}
+
   :root{
-    --tinte:#141c24;
-    --tinte-70:#5a6872;
-    --nebel:#d9e0df;
-    --karte:#f7f9f8;
-    --linie:#c2cccb;
-    --linie-fein:#e2e8e6;
-    --signal:#1f49e0;
-    --warm:#e0912b;
-    --kalt:#4d84c4;
-    --rot:#b3243c;
-    --r:3px;
-    --fs-mono:'IBM Plex Mono',ui-monospace,monospace;
-    --fs-sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
-    --fs-anzeige:'Anton',Impact,var(--fs-sans);
+    --tinte:#141c24; --tinte-70:#5a6872; --nebel:#d9e0df; --karte:#f7f9f8;
+    --linie:#c2cccb; --linie-fein:#e2e8e6; --signal:#1f49e0;
+    --warm:#e0912b; --kalt:#4d84c4; --rot:#b3243c; --r:3px;
+    --fs-mono:'Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+    --fs-sans:'Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --fs-anzeige:'Anton',Impact,'Haettenschweiler','Arial Narrow',var(--fs-sans);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{
-    background:var(--nebel);
-    color:var(--tinte);
-    font-family:var(--fs-sans);
-    font-size:15px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
+  body{background:var(--nebel);color:var(--tinte);font-family:var(--fs-sans);
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
   .huelle{max-width:1080px;margin:0 auto;padding:22px 18px 60px}
+  [hidden]{display:none!important}
+
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+  .knopf-haupt{background:var(--tinte);color:var(--karte);border:none;border-radius:var(--r);
+    padding:11px 20px;font-weight:600;display:inline-flex;align-items:center;gap:9px}
+  .knopf-haupt:hover{background:var(--signal)}
+  .knopf-haupt[disabled]{opacity:.5;cursor:default}
+  .knopf-haupt .plus{font-family:var(--fs-mono);font-size:17px;line-height:1}
+  .knopf-still{background:none;border:1px solid var(--linie);border-radius:var(--r);
+    color:var(--tinte-70);padding:6px 12px;font-family:var(--fs-mono);
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .knopf-still:hover{border-color:var(--tinte);color:var(--tinte)}
+  .knopf-still.betont{background:var(--tinte);border-color:var(--tinte);color:var(--karte)}
+  .knopf-still.betont:hover{background:var(--signal);border-color:var(--signal)}
+  .knopf-still.gefahr:hover{border-color:var(--rot);color:var(--rot)}
+  .knopf-still[disabled]{opacity:.45;cursor:default}
+
+  /* ---------- Anmeldung ---------- */
+  .tor{max-width:430px;margin:0 auto;padding:min(14vh,110px) 20px 40px}
+  .tor h1{font-family:var(--fs-anzeige);font-weight:400;font-size:clamp(40px,11vw,62px);
+    margin:0;line-height:.9;text-transform:uppercase}
+  .tor .unter{font-family:var(--fs-mono);font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--tinte-70);margin:8px 0 30px}
+  .tor label{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--tinte-70);display:block;margin-bottom:5px}
+  .tor input{width:100%;font-family:var(--fs-mono);font-size:15px;padding:11px 12px;
+    border:1px solid var(--linie);border-radius:var(--r);background:#fff;color:var(--tinte)}
+  .tor input:focus{border-color:var(--signal);outline:none}
+  .tor .knopf-haupt{width:100%;justify-content:center;margin-top:12px}
+  .tor .hilfe{font-family:var(--fs-mono);font-size:10.5px;line-height:1.6;
+    color:var(--tinte-70);margin-top:18px}
 
   /* ---------- Kopf ---------- */
   .kopf{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
     border-bottom:2px solid var(--tinte);padding-bottom:12px}
   .marke{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-  .marke h1{
-    font-family:var(--fs-anzeige);font-weight:400;font-size:clamp(34px,7vw,52px);
-    letter-spacing:.01em;margin:0;line-height:.9;text-transform:uppercase}
+  .marke h1{font-family:var(--fs-anzeige);font-weight:400;font-size:clamp(30px,6.4vw,48px);
+    margin:0;line-height:.9;text-transform:uppercase}
   .augenbraue{font-family:var(--fs-mono);font-size:11px;letter-spacing:.16em;
     text-transform:uppercase;color:var(--tinte-70)}
 
-  button{font-family:inherit;font-size:inherit;cursor:pointer}
-  :focus-visible{outline:2px solid var(--signal);outline-offset:2px}
-
-  .knopf-haupt{
-    background:var(--tinte);color:var(--karte);border:none;border-radius:var(--r);
-    padding:11px 20px;font-weight:600;letter-spacing:.01em;
-    display:inline-flex;align-items:center;gap:9px}
-  .knopf-haupt:hover{background:var(--signal)}
-  .knopf-haupt[disabled]{opacity:.5;cursor:default}
-  .knopf-haupt .plus{font-family:var(--fs-mono);font-size:17px;line-height:1}
-
-  .knopf-still{
-    background:none;border:1px solid var(--linie);border-radius:var(--r);
-    color:var(--tinte-70);padding:6px 12px;font-family:var(--fs-mono);
-    font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-  .knopf-still:hover{border-color:var(--tinte);color:var(--tinte)}
-  .knopf-still.betont{background:var(--tinte);border-color:var(--tinte);color:var(--karte)}
-  .knopf-still.betont:hover{background:var(--signal);border-color:var(--signal);color:var(--karte)}
-  .knopf-still.gefahr:hover{border-color:var(--rot);color:var(--rot)}
+  .reiter{display:flex;gap:2px;border-bottom:1px solid var(--linie);margin-top:2px}
+  .reiter button{background:none;border:none;border-bottom:2px solid transparent;
+    padding:12px 4px;margin-right:22px;font-family:var(--fs-mono);font-size:11px;
+    letter-spacing:.13em;text-transform:uppercase;color:var(--tinte-70)}
+  .reiter button.aktiv{color:var(--tinte);border-bottom-color:var(--tinte);font-weight:600}
+  .reiter .blase{background:var(--signal);color:#fff;border-radius:9px;padding:1px 6px;
+    font-size:9.5px;margin-left:6px;letter-spacing:.02em}
 
   /* ---------- Kennzahlen ---------- */
   .kennzahlen{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
     background:var(--linie);border-bottom:1px solid var(--linie)}
   .kz{background:var(--nebel);padding:15px 4px 13px}
-  .kz .wert{font-family:var(--fs-anzeige);font-size:clamp(23px,4.6vw,34px);line-height:1;
-    display:block;font-weight:400}
+  .kz .wert{font-family:var(--fs-anzeige);font-size:clamp(23px,4.6vw,34px);line-height:1;display:block}
   .kz .einheit{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);margin-left:3px}
   .kz .titel{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
     text-transform:uppercase;color:var(--tinte-70);margin-top:7px;display:block}
 
-  /* ---------- Monatsstreifen ---------- */
-  .monate{display:flex;gap:3px;align-items:flex-end;height:56px;
-    padding:14px 0 0;border-bottom:1px solid var(--linie)}
+  .monate{display:flex;gap:3px;align-items:flex-end;height:56px;padding:14px 0 0;
+    border-bottom:1px solid var(--linie)}
   .monat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:5px}
   .monat .balken{background:var(--tinte);width:100%;min-height:1px;border-radius:1px 1px 0 0}
   .monat.jetzt .balken{background:var(--signal)}
-  .monat .m-name{font-family:var(--fs-mono);font-size:9px;color:var(--tinte-70);
-    text-align:center;letter-spacing:.04em}
+  .monat .m-name{font-family:var(--fs-mono);font-size:9px;color:var(--tinte-70);text-align:center}
 
-  /* ---------- Werkzeugleiste ---------- */
   .werkzeuge{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 0 10px}
-  select{
-    font-family:var(--fs-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  select{font-family:var(--fs-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
     background:var(--karte);border:1px solid var(--linie);border-radius:var(--r);
     padding:6px 8px;color:var(--tinte)}
   .zaehler{margin-left:auto;font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);
     letter-spacing:.08em;text-transform:uppercase}
 
   /* ---------- Liste ---------- */
-  .kopfzeile,.zeile-raster{
-    display:grid;
-    grid-template-columns:74px minmax(150px,1fr) 82px 88px 128px 26px;
-    gap:14px;align-items:center}
-  .kopfzeile{padding:0 12px 7px;font-family:var(--fs-mono);font-size:9.5px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-70);
-    border-bottom:1px solid var(--tinte)}
-
-  .lauf{border-bottom:1px solid var(--linie-fein);background:transparent}
-  .lauf:hover{background:var(--karte)}
-  .lauf.offen{background:var(--karte)}
-  .zeile{width:100%;text-align:left;background:none;border:none;
-    padding:13px 12px;font:inherit;color:inherit}
-
+  .kopfzeile,.zeile-raster{display:grid;
+    grid-template-columns:74px minmax(150px,1fr) 82px 88px 128px 26px;gap:14px;align-items:center}
+  .kopfzeile{padding:0 12px 7px;font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--tinte-70);border-bottom:1px solid var(--tinte)}
+  .lauf{border-bottom:1px solid var(--linie-fein)}
+  .lauf:hover,.lauf.offen{background:var(--karte)}
+  .zeile{width:100%;text-align:left;background:none;border:none;padding:13px 12px;font:inherit;color:inherit}
   .datum{font-family:var(--fs-mono);font-size:12px;line-height:1.25}
   .datum .tag{display:block;font-weight:600}
   .datum .wtag{color:var(--tinte-70);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
-
-  /* Signaturelement: das Streckenband */
   .band-feld{display:flex;flex-direction:column;gap:5px;min-width:0}
   .band{height:9px;background:var(--linie-fein);border-radius:1px;overflow:hidden}
   .band i{display:block;height:100%;background:var(--tinte);border-radius:1px}
   .lauf:hover .band i,.lauf.offen .band i{background:var(--signal)}
   .band-zahl{font-family:var(--fs-mono);font-size:13px;font-weight:600}
   .band-zahl span{font-weight:400;color:var(--tinte-70);font-size:11px}
-
   .dauer{font-family:var(--fs-mono);font-size:13px}
   .tempo{font-family:var(--fs-mono);font-size:16px;font-weight:600;letter-spacing:-.02em}
   .tempo span{font-size:10px;font-weight:400;color:var(--tinte-70);letter-spacing:.06em}
-
   .wetter{display:flex;align-items:center;gap:9px;font-family:var(--fs-mono);font-size:11.5px;
     color:var(--tinte-70);white-space:nowrap}
   .wetter b{font-weight:600;color:var(--tinte)}
   .grad-punkt{width:8px;height:8px;border-radius:50%;flex:none}
   .himmel{flex:none;display:block}
+  .marken{font-family:var(--fs-mono);font-size:12px;color:var(--tinte-70);text-align:right}
+  .wer{font-family:var(--fs-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--signal);font-weight:600}
 
-  .bild-marke{font-family:var(--fs-mono);font-size:12px;color:var(--tinte-70);text-align:right}
-
-  /* ---------- Detail ---------- */
   .detail{padding:2px 12px 22px;display:grid;grid-template-columns:1fr 260px;gap:22px}
   .detail-daten{display:flex;flex-wrap:wrap;gap:20px 30px;align-items:flex-start}
   .dd{min-width:74px}
@@ -144,41 +140,62 @@
   .dd .v{font-family:var(--fs-mono);font-size:14px;font-weight:500}
   .notiz{flex-basis:100%;font-size:14px;max-width:52ch;border-left:2px solid var(--linie);
     padding-left:12px;color:var(--tinte-70)}
-  .strecke-bild{width:100%;border:1px solid var(--linie);border-radius:var(--r);display:block;
-    background:var(--nebel)}
+  .strecke-bild{width:100%;border:1px solid var(--linie);border-radius:var(--r);display:block;background:var(--nebel)}
   .bild-platz{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70);
     border:1px dashed var(--linie);border-radius:var(--r);padding:26px 10px;text-align:center}
   .detail-aktionen{display:flex;gap:8px;margin-top:16px;flex-basis:100%}
 
-  /* ---------- Leerzustand / Meldungen ---------- */
   .leer{padding:52px 14px;text-align:center}
   .leer p{margin:0 0 6px;font-family:var(--fs-mono);font-size:12px;letter-spacing:.08em;
     text-transform:uppercase;color:var(--tinte-70)}
-  .leer h2{font-family:var(--fs-anzeige);font-weight:400;font-size:26px;margin:0 0 18px;
-    text-transform:uppercase;letter-spacing:.01em}
+  .leer h2{font-family:var(--fs-anzeige);font-weight:400;font-size:26px;margin:0 0 18px;text-transform:uppercase}
   .meldung{border:1px solid var(--rot);border-left-width:3px;background:var(--karte);
     padding:11px 14px;font-size:13.5px;border-radius:var(--r);margin:14px 0}
+  .meldung.gut{border-color:var(--signal)}
+  .laden{padding:46px 0;text-align:center;font-family:var(--fs-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-70)}
+
+  /* ---------- Freunde ---------- */
+  .block{border-bottom:1px solid var(--linie-fein);padding:18px 0}
+  .block h3{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--tinte-70);margin:0 0 12px;font-weight:400}
+  .such-zeile{display:flex;gap:8px;flex-wrap:wrap}
+  .such-zeile input{flex:1 1 180px;min-width:0;font-family:var(--fs-mono);font-size:14px;
+    padding:9px 11px;border:1px solid var(--linie);border-radius:var(--r);background:#fff;color:var(--tinte)}
+  .such-zeile input:focus{border-color:var(--signal);outline:none}
+  .person{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--linie-fein)}
+  .person:last-child{border-bottom:none}
+  .person .name{font-family:var(--fs-mono);font-size:14px;font-weight:600}
+  .person .rolle{font-family:var(--fs-mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--tinte-70)}
+  .person .tat{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+  .nichts{font-family:var(--fs-mono);font-size:11px;color:var(--tinte-70)}
 
   /* ---------- Formular ---------- */
   .schleier{position:fixed;inset:0;background:rgba(20,28,36,.55);display:flex;
     align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;z-index:40}
   .blatt{background:var(--karte);width:100%;max-width:620px;border-radius:var(--r);
     padding:22px 22px 20px;margin:auto 0}
-  .blatt h2{font-family:var(--fs-anzeige);font-weight:400;font-size:27px;margin:0 0 2px;
-    text-transform:uppercase;letter-spacing:.01em}
+  .blatt h2{font-family:var(--fs-anzeige);font-weight:400;font-size:27px;margin:0 0 2px;text-transform:uppercase}
   .blatt .untertitel{font-family:var(--fs-mono);font-size:10.5px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--tinte-70);margin:0 0 18px}
-
   .feldgruppe{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
   .feld{display:flex;flex-direction:column;gap:5px;min-width:0}
   .feld label,.legende{font-family:var(--fs-mono);font-size:9.5px;letter-spacing:.13em;
     text-transform:uppercase;color:var(--tinte-70)}
-  .feld input[type=text],.feld input[type=number],.feld input[type=date],.feld input[type=time],.feld textarea{
+  .feld input[type=text],.feld input[type=number],.feld input[type=date],
+  .feld input[type=time],.feld textarea{
     font-family:var(--fs-mono);font-size:14px;padding:9px 10px;border:1px solid var(--linie);
     border-radius:var(--r);background:#fff;color:var(--tinte);width:100%}
   .feld textarea{font-family:var(--fs-sans);resize:vertical;min-height:62px}
   .feld input:focus,.feld textarea:focus{border-color:var(--signal);outline:none}
-
+  .dauer-feld{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .abschnitt{border-top:1px solid var(--linie-fein);padding-top:14px;margin-top:4px}
+  .tempo-schau{background:var(--tinte);color:var(--karte);border-radius:var(--r);
+    padding:12px 16px;display:flex;align-items:baseline;gap:12px;margin:2px 0 16px}
+  .tempo-schau .gross{font-family:var(--fs-anzeige);font-size:31px;line-height:1}
+  .tempo-schau .klein{font-family:var(--fs-mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;opacity:.72}
   .wetter-auto{display:flex;gap:7px;align-items:center;margin:10px 0 7px;flex-wrap:wrap}
   .wetter-auto input{flex:1 1 150px;min-width:0;font-family:var(--fs-mono);font-size:13px;
     padding:8px 10px;border:1px solid var(--linie);border-radius:var(--r);background:#fff;color:var(--tinte)}
@@ -187,46 +204,35 @@
     margin:0 0 13px;letter-spacing:.03em}
   .status.warnung{color:var(--rot)}
   .status.gut{color:var(--signal)}
-
-  .dauer-feld{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-  .abschnitt{border-top:1px solid var(--linie-fein);padding-top:14px;margin-top:4px}
-
-  .tempo-schau{background:var(--tinte);color:var(--karte);border-radius:var(--r);
-    padding:12px 16px;display:flex;align-items:baseline;gap:12px;margin:2px 0 16px}
-  .tempo-schau .gross{font-family:var(--fs-anzeige);font-size:31px;line-height:1}
-  .tempo-schau .klein{font-family:var(--fs-mono);font-size:11px;letter-spacing:.1em;
-    text-transform:uppercase;opacity:.72}
-
   .schieber{width:100%;accent-color:var(--signal)}
   .himmel-zeile{display:flex;align-items:center;gap:10px}
-  .himmel-text{font-family:var(--fs-mono);font-size:11.5px;color:var(--tinte-70);
-    white-space:nowrap;min-width:104px}
-
+  .himmel-text{font-family:var(--fs-mono);font-size:11.5px;color:var(--tinte-70);min-width:104px}
   .bild-feld{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .bild-vorschau{width:86px;height:64px;object-fit:cover;border:1px solid var(--linie);
-    border-radius:var(--r)}
+  .bild-vorschau{width:86px;height:64px;object-fit:cover;border:1px solid var(--linie);border-radius:var(--r)}
   input[type=file]{font-family:var(--fs-mono);font-size:11px;max-width:100%}
-
+  .teilen{display:flex;align-items:center;gap:10px;background:var(--nebel);border-radius:var(--r);
+    padding:11px 13px;margin-top:14px}
+  .teilen input{width:17px;height:17px;accent-color:var(--signal);flex:none}
+  .teilen .txt{font-family:var(--fs-mono);font-size:11px;line-height:1.5;color:var(--tinte-70)}
+  .teilen .txt b{color:var(--tinte);display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
   .blatt-fuss{display:flex;gap:10px;align-items:center;justify-content:flex-end;
     border-top:1px solid var(--linie-fein);padding-top:15px;margin-top:6px;flex-wrap:wrap}
-  .fehler{color:var(--rot);font-family:var(--fs-mono);font-size:11.5px;margin-right:auto;
-    max-width:60%}
+  .fehler{color:var(--rot);font-family:var(--fs-mono);font-size:11.5px;margin-right:auto;max-width:58%}
 
   .fuss{margin-top:26px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
     font-family:var(--fs-mono);font-size:10.5px;color:var(--tinte-70);letter-spacing:.06em}
   .fuss .rest{margin-left:auto;text-align:right}
-
-  .laden{padding:46px 0;text-align:center;font-family:var(--fs-mono);font-size:11px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--tinte-70)}
+  .fuss a{color:inherit}
 
   @media (max-width:720px){
     .huelle{padding:16px 13px 48px}
     .kennzahlen{grid-template-columns:repeat(2,1fr)}
     .kopfzeile{display:none}
+    .reiter button{margin-right:16px}
     .zeile-raster{grid-template-columns:1fr auto;gap:8px 12px}
     .zeile{padding:14px 10px}
     .datum{grid-column:1;order:1}
-    .bild-marke{grid-column:2;order:2}
+    .marken{grid-column:2;order:2}
     .band-feld{grid-column:1 / -1;order:3;margin-top:2px}
     .dauer{order:4}
     .tempo{order:5;text-align:right}
@@ -241,794 +247,943 @@
 </head>
 <body>
 
-<div class="huelle">
+<!-- ================= Anmeldung ================= -->
+<div class="tor" id="tor" hidden>
+  <h1>Laufbuch</h1>
+  <p class="unter" id="tor-unter">Anmeldung per E-Mail</p>
+  <div id="tor-inhalt"></div>
+</div>
+
+<!-- ================= App ================= -->
+<div class="huelle" id="app" hidden>
   <header class="kopf">
     <div class="marke">
       <h1>Laufbuch</h1>
-      <span class="augenbraue" id="spanne">—</span>
+      <span class="augenbraue" id="ich-name"></span>
     </div>
     <button class="knopf-haupt" id="neu-knopf"><span class="plus">+</span> Lauf eintragen</button>
   </header>
 
-  <section class="kennzahlen" id="kennzahlen"></section>
-  <div class="monate" id="monate"></div>
-
-  <div class="werkzeuge">
-    <select id="jahr-filter" aria-label="Jahr filtern"></select>
-    <select id="sortierung" aria-label="Sortierung">
-      <option value="datum">Neueste zuerst</option>
-      <option value="datum-alt">Älteste zuerst</option>
-      <option value="km">Längste Strecke</option>
-      <option value="tempo">Schnellstes Tempo</option>
-    </select>
-    <span class="zaehler" id="zaehler"></span>
-  </div>
+  <nav class="reiter">
+    <button data-reiter="eigen" class="aktiv">Mein Laufbuch</button>
+    <button data-reiter="feed">Feed</button>
+    <button data-reiter="freunde">Freunde<span class="blase" id="blase" hidden></span></button>
+  </nav>
 
   <div id="meldung-feld"></div>
 
-  <div class="kopfzeile" aria-hidden="true">
-    <span>Datum</span><span>Strecke</span><span>Dauer</span><span>Tempo</span><span>Wetter</span><span title="Zeile anklicken zum Bearbeiten">▾</span>
-  </div>
+  <!-- Mein Laufbuch -->
+  <section id="ansicht-eigen">
+    <div class="kennzahlen" id="kennzahlen"></div>
+    <div class="monate" id="monate"></div>
+    <div class="werkzeuge">
+      <select id="jahr-filter" aria-label="Jahr filtern"></select>
+      <select id="sortierung" aria-label="Sortierung">
+        <option value="datum">Neueste zuerst</option>
+        <option value="datum-alt">Älteste zuerst</option>
+        <option value="km">Längste Strecke</option>
+        <option value="tempo">Schnellstes Tempo</option>
+      </select>
+      <span class="zaehler" id="zaehler"></span>
+    </div>
+    <div class="kopfzeile" aria-hidden="true">
+      <span>Datum</span><span>Strecke</span><span>Dauer</span><span>Tempo</span><span>Wetter</span><span title="Zeile anklicken zum Bearbeiten">▾</span>
+    </div>
+    <main id="liste"><div class="laden">Läufe werden geladen …</div></main>
+  </section>
 
-  <main id="liste"><div class="laden">Laufbuch wird geladen …</div></main>
+  <!-- Feed -->
+  <section id="ansicht-feed" hidden>
+    <main id="feed"><div class="laden">Feed wird geladen …</div></main>
+  </section>
+
+  <!-- Freunde -->
+  <section id="ansicht-freunde" hidden>
+    <div class="block">
+      <h3>Jemandem folgen</h3>
+      <div class="such-zeile">
+        <input type="text" id="such-name" placeholder="Benutzername genau eingeben" autocapitalize="none" spellcheck="false">
+        <button class="knopf-still betont" id="such-knopf">Anfrage senden</button>
+      </div>
+      <p class="status" id="such-status" style="margin-top:10px">Es gibt keine Nutzerliste. Du musst den Benutzernamen kennen.</p>
+    </div>
+    <div class="block" id="block-anfragen"></div>
+    <div class="block" id="block-folge-ich"></div>
+    <div class="block" id="block-folgen-mir"></div>
+  </section>
 
   <footer class="fuss">
     <button class="knopf-still" id="csv-knopf">CSV</button>
-    <button class="knopf-still" id="json-knopf">Sicherung erstellen</button>
+    <button class="knopf-still" id="json-knopf">Sicherung</button>
     <button class="knopf-still" id="import-knopf">Sicherung einlesen</button>
     <input type="file" id="import-datei" accept="application/json,.json" hidden>
-    <a href="https://open-meteo.com/" target="_blank" rel="noopener" style="color:inherit">Wetterdaten: Open-Meteo</a>
-    <span class="rest" id="hinweis"></span>
+    <button class="knopf-still" id="abmelden">Abmelden</button>
+    <button class="knopf-still gefahr" id="konto-weg">Konto löschen</button>
+    <span class="rest"><a href="https://open-meteo.com/" target="_blank" rel="noopener">Wetterdaten: Open-Meteo</a></span>
   </footer>
 </div>
 
 <div id="formular-raum"></div>
 
-<script>
-(function(){
-  "use strict";
+<script type="module">
+/* ==================================================================
+   HIER DEINE ZWEI ANGABEN EINTRAGEN
+   Zu finden unter: Supabase ▸ Project Settings ▸ API
+   Beide dürfen offen im Repository stehen.
+   Den service_role key niemals hier eintragen.
+   ================================================================== */
+const KONFIG = {
+  url:        "HIER_DEINE_PROJECT_URL",
+  schluessel: "HIER_DEIN_ANON_KEY"
+};
+/* ================================================================== */
 
-  const SCHLUESSEL = "laufbuch:laeufe";
-  const BILD_PRAEFIX = "laufbuch:bild:";
-  const WTAGE = ["So","Mo","Di","Mi","Do","Fr","Sa"];
-  const MONATE_KURZ = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  let laeufe = [];
-  let offenerLauf = null;
-  let bildZwischen = {};
-  let bearbeitung = null;
+const WTAGE = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const MONATE_KURZ = ["J","F","M","A","M","J","J","A","S","O","N","D"];
 
-  /* ================= Speicher =================
-     Drei Wege, je nachdem wo die Datei läuft:
-     1. im Claude-Artefakt  -> window.storage
-     2. eigenständig        -> IndexedDB
-     3. Notnagel            -> localStorage                       */
-  const Speicher = (function(){
-    const claudeDa = typeof window.storage === "object" && window.storage
-      && typeof window.storage.get === "function";
+const el = (id)=>document.getElementById(id);
+const sichern = (s)=>String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const zahl = (n, dez=1)=>Number(n).toFixed(dez).replace(".", ",");
 
-    if(claudeDa){
-      return {
-        art:"claude", name:"in diesem Artefakt",
-        async hole(k){ try{ const t = await window.storage.get(k,false); return t && t.value != null ? t.value : null; }catch(e){ return null; } },
-        async setze(k,v){ const t = await window.storage.set(k,v,false); if(!t) throw new Error("Speichern fehlgeschlagen"); },
-        async entferne(k){ try{ await window.storage.delete(k,false); }catch(e){} }
+/* ---------- Grundgerüst prüfen ---------- */
+if(KONFIG.url.startsWith("HIER_") || KONFIG.schluessel.startsWith("HIER_")){
+  document.body.innerHTML = '<div class="tor"><h1>Laufbuch</h1>'+
+    '<p class="unter">Noch nicht eingerichtet</p>'+
+    '<p class="hilfe">Trag oben in dieser Datei die Project URL und den anon key '+
+    'aus deinem Supabase-Projekt ein (Project Settings ▸ API) und lade sie erneut hoch.</p></div>';
+  throw new Error("Konfiguration fehlt");
+}
+
+const sb = createClient(KONFIG.url, KONFIG.schluessel);
+
+/* ================= Zustand ================= */
+let ich = null;          // { id, benutzername }
+let laeufe = [];         // eigene Läufe
+let feed = [];           // Läufe der Gefolgten
+let folgen = [];         // Folge-Zeilen
+let offenerLauf = null;
+let bildLinks = {};      // lauf-id -> signierte Adresse
+let bearbeitung = null;
+let letzterOrt = null;
+let reiter = "eigen";
+
+/* ================= Helfer ================= */
+function zeitText(sek){
+  sek = Math.round(sek);
+  const h = Math.floor(sek/3600), m = Math.floor((sek%3600)/60), s = sek%60;
+  const p = (v)=>String(v).padStart(2,"0");
+  return h > 0 ? h+":"+p(m)+":"+p(s) : m+":"+p(s);
+}
+function stundenText(sek){
+  const h = Math.floor(sek/3600), m = Math.round((sek%3600)/60);
+  return m === 60 ? (h+1)+":00" : h+":"+String(m).padStart(2,"0");
+}
+function tempoText(sekProKm){
+  if(!isFinite(sekProKm) || sekProKm <= 0) return "—";
+  const m = Math.floor(sekProKm/60), s = Math.round(sekProKm%60);
+  return s === 60 ? (m+1)+":00" : m+":"+String(s).padStart(2,"0");
+}
+const tempoVon = (l)=> l.km > 0 ? l.sek / l.km : Infinity;
+const alsDatum = (iso)=> new Date(iso + "T12:00:00");
+function datumText(iso){
+  const d = alsDatum(iso);
+  return { tag: String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+String(d.getFullYear()).slice(2),
+           wtag: WTAGE[d.getDay()] };
+}
+function tempFarbe(t){
+  if(t == null || t === "") return "var(--linie)";
+  const v = Math.max(-10, Math.min(32, Number(t)));
+  const a = (v + 10) / 42;
+  return a < .5 ? "var(--kalt)" : a < .72 ? "#8aa87a" : "var(--warm)";
+}
+function himmelName(w){
+  if(w == null || w === "") return "";
+  w = Number(w);
+  return w < 12 ? "klar" : w < 40 ? "heiter" : w < 75 ? "bewölkt" : "bedeckt";
+}
+function himmelGlyph(wolken, regen){
+  const w = wolken == null || wolken === "" ? 0 : Number(wolken);
+  const r = Number(regen) > 0;
+  return '<svg class="himmel" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">'+
+    (w < 40 ? '<circle cx="6" cy="6" r="3.6" fill="var(--warm)"/>' : "")+
+    (w >= 12 ? '<path d="M5.5 13.5h8a2.6 2.6 0 0 0 .2-5.2 3.6 3.6 0 0 0-6.9-.7A2.7 2.7 0 0 0 5.5 13.5z" fill="'+(w>=75?"var(--tinte-70)":"var(--linie)")+'"/>' : "")+
+    (r ? '<path d="M7 15.4v2.6M11 15.4v2.6M15 15.4v2.6" stroke="var(--signal)" stroke-width="1.6" stroke-linecap="round"/>' : "")+
+    "</svg>";
+}
+function meldung(text, gut){
+  el("meldung-feld").innerHTML = text
+    ? '<div class="meldung'+(gut ? " gut" : "")+'">'+sichern(text)+"</div>" : "";
+  if(text) setTimeout(()=>{ const m = el("meldung-feld"); if(m) m.innerHTML = ""; }, 9000);
+}
+function fehlerText(e){
+  if(!e) return "Unbekannter Fehler.";
+  if(e.code === "23505") return "Diesen Benutzernamen gibt es schon.";
+  if(e.code === "23514") return "Die Eingabe passt nicht zu den erlaubten Werten.";
+  if(e.code === "42501" || e.code === "PGRST301") return "Dafür fehlt die Berechtigung.";
+  if(String(e.message||"").includes("Failed to fetch")) return "Keine Verbindung zum Server.";
+  return e.message || "Unbekannter Fehler.";
+}
+function zahlOderNull(wert){
+  const t = String(wert).trim().replace(",", ".");
+  if(t === "") return null;
+  const n = Number(t);
+  return isFinite(n) ? n : null;
+}
+function normieren(l){
+  return { ...l,
+    km: Number(l.km), sek: Number(l.sek),
+    temp: l.temp == null ? "" : Number(l.temp),
+    feuchte: l.feuchte == null ? "" : Number(l.feuchte),
+    regen: l.regen == null ? "" : Number(l.regen),
+    wolken: l.wolken == null ? "" : Number(l.wolken),
+    zeit: l.zeit ? String(l.zeit).slice(0,5) : "" };
+}
+
+/* ================= Bilder ================= */
+function verkleinern(quelle, maxKante, guete){
+  return new Promise((ok, fehl)=>{
+    const arbeite = (url)=>{
+      const bild = new Image();
+      bild.onerror = ()=>fehl(new Error("Dieses Bildformat wird nicht unterstützt."));
+      bild.onload = ()=>{
+        let b = bild.width, h = bild.height;
+        const f = Math.min(1, maxKante / Math.max(b, h));
+        b = Math.max(1, Math.round(b*f)); h = Math.max(1, Math.round(h*f));
+        const c = document.createElement("canvas");
+        c.width = b; c.height = h;
+        c.getContext("2d").drawImage(bild, 0, 0, b, h);
+        // Das Neuzeichnen entfernt zugleich alle Standortdaten aus der Datei
+        c.toBlob(bl=>bl ? ok(bl) : fehl(new Error("Das Bild ließ sich nicht umwandeln.")), "image/jpeg", guete);
       };
-    }
-
-    let db = null;
-    function idb(){
-      if(db) return Promise.resolve(db);
-      return new Promise((ok,fehl)=>{
-        const a = indexedDB.open("laufbuch", 1);
-        a.onupgradeneeded = ()=>{ if(!a.result.objectStoreNames.contains("werte")) a.result.createObjectStore("werte"); };
-        a.onsuccess = ()=>{ db = a.result; ok(db); };
-        a.onerror = ()=>fehl(a.error);
-      });
-    }
-    function idbLauf(modus, arbeit){
-      return idb().then(d=>new Promise((ok,fehl)=>{
-        const t = d.transaction("werte", modus);
-        const anfrage = arbeit(t.objectStore("werte"));
-        anfrage.onsuccess = ()=>ok(anfrage.result);
-        anfrage.onerror = ()=>fehl(anfrage.error);
-      }));
-    }
-
-    if(typeof indexedDB !== "undefined" && indexedDB){
-      return {
-        art:"idb", name:"in diesem Browser",
-        async hole(k){ try{ const v = await idbLauf("readonly", s=>s.get(k)); return v == null ? null : v; }catch(e){ return null; } },
-        async setze(k,v){ await idbLauf("readwrite", s=>s.put(v,k)); },
-        async entferne(k){ try{ await idbLauf("readwrite", s=>s.delete(k)); }catch(e){} }
-      };
-    }
-
-    return {
-      art:"ls", name:"in diesem Browser",
-      async hole(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
-      async setze(k,v){ localStorage.setItem(k,v); },
-      async entferne(k){ try{ localStorage.removeItem(k); }catch(e){} }
+      bild.src = url;
     };
-  })();
-
-  /* ---------- Helfer ---------- */
-  const el = (id) => document.getElementById(id);
-  const sichern = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
-    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const zahl = (n, dez=1) => Number(n).toFixed(dez).replace(".", ",");
-
-  function zeitText(sek){
-    sek = Math.round(sek);
-    const h = Math.floor(sek/3600), m = Math.floor((sek%3600)/60), s = sek%60;
-    const p = (v)=>String(v).padStart(2,"0");
-    return h > 0 ? h+":"+p(m)+":"+p(s) : m+":"+p(s);
-  }
-  function stundenText(sek){
-    const h = Math.floor(sek/3600), m = Math.round((sek%3600)/60);
-    return (m === 60 ? (h+1)+":00" : h+":"+String(m).padStart(2,"0"));
-  }
-  function tempoText(sekProKm){
-    if(!isFinite(sekProKm) || sekProKm <= 0) return "—";
-    const m = Math.floor(sekProKm/60), s = Math.round(sekProKm%60);
-    return (s === 60 ? (m+1)+":00" : m+":"+String(s).padStart(2,"0"));
-  }
-  const tempoVon = (l) => l.km > 0 ? l.sek / l.km : Infinity;
-  const alsDatum = (iso) => new Date(iso + "T12:00:00");
-
-  function datumText(iso){
-    const d = alsDatum(iso);
-    return { tag: String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+String(d.getFullYear()).slice(2),
-             wtag: WTAGE[d.getDay()] };
-  }
-  function tempFarbe(t){
-    if(t == null || t === "") return "var(--linie)";
-    const v = Math.max(-10, Math.min(32, Number(t)));
-    const anteil = (v + 10) / 42;
-    return anteil < .5 ? "var(--kalt)" : anteil < .72 ? "#8aa87a" : "var(--warm)";
-  }
-  function himmelName(w){
-    if(w == null || w === "") return "";
-    w = Number(w);
-    if(w < 12) return "klar";
-    if(w < 40) return "heiter";
-    if(w < 75) return "bewölkt";
-    return "bedeckt";
-  }
-  function himmelGlyph(wolken, regen){
-    const w = wolken === "" || wolken == null ? 0 : Number(wolken);
-    const r = Number(regen) > 0;
-    const sonne = w < 40 ? '<circle cx="6" cy="6" r="3.6" fill="var(--warm)"/>' : "";
-    const wolke = w >= 12 ? '<path d="M5.5 13.5h8a2.6 2.6 0 0 0 .2-5.2 3.6 3.6 0 0 0-6.9-.7A2.7 2.7 0 0 0 5.5 13.5z" fill="'+(w>=75?"var(--tinte-70)":"var(--linie)")+'"/>' : "";
-    const tropfen = r ? '<path d="M7 15.4v2.6M11 15.4v2.6M15 15.4v2.6" stroke="var(--signal)" stroke-width="1.6" stroke-linecap="round"/>' : "";
-    return '<svg class="himmel" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">'+sonne+wolke+tropfen+"</svg>";
-  }
-  function meldung(text){
-    el("meldung-feld").innerHTML = text ? '<div class="meldung">'+sichern(text)+"</div>" : "";
-  }
-
-  /* ---------- Daten laden und sichern ---------- */
-  async function ladeLaeufe(){
-    const roh = await Speicher.hole(SCHLUESSEL);
-    try{ laeufe = roh ? JSON.parse(roh) : []; }catch(e){ laeufe = []; }
-    if(!Array.isArray(laeufe)) laeufe = [];
-  }
-  async function speichereLaeufe(){
-    try{ await Speicher.setze(SCHLUESSEL, JSON.stringify(laeufe)); return true; }
-    catch(e){ meldung("Der Eintrag ließ sich nicht speichern. Versuch es noch einmal."); return false; }
-  }
-  async function ladeBild(id){
-    if(bildZwischen[id] !== undefined) return bildZwischen[id];
-    bildZwischen[id] = await Speicher.hole(BILD_PRAEFIX + id);
-    return bildZwischen[id];
-  }
-
-  /* ---------- Bildverarbeitung ---------- */
-  function verkleinern(quelle, maxKante, guete){
-    return new Promise((ok, fehl)=>{
-      const arbeite = (datenUrl)=>{
-        const bild = new Image();
-        bild.onerror = ()=>fehl(new Error("Dieses Bildformat wird nicht unterstützt."));
-        bild.onload = ()=>{
-          let b = bild.width, h = bild.height;
-          const f = Math.min(1, maxKante / Math.max(b, h));
-          b = Math.max(1, Math.round(b*f)); h = Math.max(1, Math.round(h*f));
-          const c = document.createElement("canvas");
-          c.width = b; c.height = h;
-          c.getContext("2d").drawImage(bild, 0, 0, b, h);
-          ok(c.toDataURL("image/jpeg", guete));
-        };
-        bild.src = datenUrl;
-      };
-      if(typeof quelle === "string") return arbeite(quelle);
-      const leser = new FileReader();
-      leser.onerror = ()=>fehl(new Error("Die Datei ließ sich nicht lesen."));
-      leser.onload = ()=>arbeite(leser.result);
-      leser.readAsDataURL(quelle);
-    });
-  }
-
-  /* ---------- Kennzahlen ---------- */
-  function zeitraum(basis){
-    // Spanne vom ersten Lauf bis heute (bzw. bis Jahresende bei Jahresfilter)
-    const daten = basis.map(l=>alsDatum(l.datum).getTime()).sort((a,b)=>a-b);
-    const start = daten[0];
-    const heute = Date.now();
-    const jahr = el("jahr-filter").value;
-    let ende = heute;
-    if(jahr !== "alle"){
-      const jahresEnde = new Date(Number(jahr), 11, 31, 12).getTime();
-      ende = Math.min(heute, jahresEnde);
-    }
-    ende = Math.max(ende, daten[daten.length-1]);
-    const tage = (ende - start) / 86400000 + 1;
-    return { tage: Math.max(1, tage), wochen: Math.max(1, tage/7), monate: Math.max(1, tage/30.4375) };
-  }
-
-  function zeichneKennzahlen(){
-    const basis = gefiltert();
-    const n = basis.length;
-    const kmGesamt = basis.reduce((s,l)=>s+l.km, 0);
-    const sekGesamt = basis.reduce((s,l)=>s+l.sek, 0);
-    const schnitt = kmGesamt > 0 ? sekGesamt / kmGesamt : Infinity;
-    const bester = n ? Math.min.apply(null, basis.map(tempoVon)) : Infinity;
-    const sp = n ? zeitraum(basis) : {wochen:1, monate:1};
-
-    const felder = [
-      [zahl(kmGesamt,1), "km", "Gesamtstrecke"],
-      [n ? stundenText(sekGesamt) : "—", "h", "Gesamtdauer"],
-      [String(n), "", n === 1 ? "Lauf" : "Läufe"],
-      [n ? zahl(kmGesamt/n,1) : "—", "km", "Ø je Lauf"],
-      [n ? zahl(kmGesamt/sp.wochen,1) : "—", "km", "Ø je Woche"],
-      [n ? zahl(kmGesamt/sp.monate,1) : "—", "km", "Ø je Monat"],
-      [tempoText(schnitt), "min/km", "Schnitt-Tempo"],
-      [tempoText(bester), "min/km", "Bestes Tempo"]
-    ];
-    el("kennzahlen").innerHTML = felder.map(([w,e,t])=>
-      '<div class="kz"><span class="wert">'+w+(e ? '<span class="einheit">'+e+"</span>" : "")+"</span>"+
-      '<span class="titel">'+t+"</span></div>").join("");
-
-    const jahr = el("jahr-filter").value;
-    if(!laeufe.length){ el("spanne").textContent = "noch leer"; return; }
-    if(jahr !== "alle"){ el("spanne").textContent = jahr; return; }
-    const jahre = laeufe.map(l=>l.datum.slice(0,4)).sort();
-    el("spanne").textContent = jahre[0] === jahre[jahre.length-1]
-      ? jahre[0] : jahre[0]+"–"+jahre[jahre.length-1];
-  }
-
-  function zeichneMonate(){
-    const heute = new Date();
-    const koerbe = [];
-    for(let i = 11; i >= 0; i--){
-      const d = new Date(heute.getFullYear(), heute.getMonth()-i, 1);
-      koerbe.push({ j: d.getFullYear(), m: d.getMonth(), km: 0 });
-    }
-    laeufe.forEach(l=>{
-      const d = alsDatum(l.datum);
-      const k = koerbe.find(x=>x.j === d.getFullYear() && x.m === d.getMonth());
-      if(k) k.km += l.km;
-    });
-    const max = Math.max(1, ...koerbe.map(k=>k.km));
-    el("monate").innerHTML = koerbe.map((k,i)=>
-      '<div class="monat'+(i === 11 ? " jetzt" : "")+'" title="'+MONATE_KURZ[k.m]+" "+k.j+": "+zahl(k.km,1)+' km">'+
-        '<div class="balken" style="height:'+(k.km/max*100)+'%"></div>'+
-        '<span class="m-name">'+MONATE_KURZ[k.m]+"</span></div>").join("");
-  }
-
-  /* ---------- Liste ---------- */
-  function gefiltert(){
-    const jahr = el("jahr-filter").value;
-    let l = jahr === "alle" ? laeufe.slice() : laeufe.filter(x=>x.datum.slice(0,4) === jahr);
-    const s = el("sortierung").value;
-    if(s === "datum") l.sort((a,b)=>b.datum.localeCompare(a.datum));
-    if(s === "datum-alt") l.sort((a,b)=>a.datum.localeCompare(b.datum));
-    if(s === "km") l.sort((a,b)=>b.km - a.km);
-    if(s === "tempo") l.sort((a,b)=>tempoVon(a) - tempoVon(b));
-    return l;
-  }
-
-  function fuelleJahre(){
-    const w = el("jahr-filter"), alt = w.value;
-    const jahre = Array.from(new Set(laeufe.map(l=>l.datum.slice(0,4)))).sort().reverse();
-    w.innerHTML = '<option value="alle">Alle Jahre</option>' +
-      jahre.map(j=>'<option value="'+j+'">'+j+"</option>").join("");
-    if(alt && Array.from(w.options).some(o=>o.value === alt)) w.value = alt;
-  }
-
-  function wetterTeil(l){
-    const hat = [l.temp, l.feuchte, l.regen, l.wolken].some(v=>v !== "" && v != null);
-    if(!hat) return '<span class="wetter">—</span>';
-    let s = '<span class="wetter">';
-    s += '<span class="grad-punkt" style="background:'+tempFarbe(l.temp)+'"></span>';
-    if(l.temp !== "" && l.temp != null) s += "<b>"+zahl(l.temp,0)+"°</b>";
-    if(l.feuchte !== "" && l.feuchte != null) s += "<span>"+Math.round(l.feuchte)+"%</span>";
-    if(l.regen !== "" && l.regen != null && Number(l.regen) > 0) s += "<span>"+zahl(l.regen,1)+"&thinsp;mm</span>";
-    s += himmelGlyph(l.wolken, l.regen);
-    return s + "</span>";
-  }
-
-  function zeichneListe(){
-    const liste = el("liste");
-    const daten = gefiltert();
-    el("zaehler").textContent = daten.length
-      ? daten.length + (daten.length === 1 ? " Eintrag" : " Einträge") : "";
-
-    if(!laeufe.length){
-      liste.innerHTML =
-        '<div class="leer"><p>Noch kein Eintrag</p><h2>Der erste Lauf fehlt</h2>'+
-        '<button class="knopf-haupt" id="leer-knopf"><span class="plus">+</span> Lauf eintragen</button>'+
-        '<p style="margin-top:20px">Später klappst du jede Zeile per Klick auf, um sie zu ändern oder zu löschen</p></div>';
-      el("leer-knopf").addEventListener("click", ()=>oeffneFormular(null));
-      return;
-    }
-    if(!daten.length){
-      liste.innerHTML = '<div class="leer"><p>Kein Treffer</p><h2>In diesem Jahr steht nichts</h2></div>';
-      return;
-    }
-
-    const maxKm = Math.max.apply(null, daten.map(l=>l.km));
-    liste.innerHTML = daten.map(l=>{
-      const d = datumText(l.datum);
-      const breite = Math.max(5, l.km / maxKm * 100);
-      return '<article class="lauf'+(offenerLauf === l.id ? " offen" : "")+'" data-id="'+l.id+'">'+
-        '<button class="zeile zeile-raster" aria-expanded="'+(offenerLauf === l.id)+'">'+
-          '<span class="datum"><span class="tag">'+d.tag+'</span><span class="wtag">'+d.wtag+"</span></span>"+
-          '<span class="band-feld"><span class="band-zahl">'+zahl(l.km,2)+' <span>km</span></span>'+
-            '<span class="band"><i style="width:'+breite+'%"></i></span></span>'+
-          '<span class="dauer">'+zeitText(l.sek)+"</span>"+
-          '<span class="tempo">'+tempoText(tempoVon(l))+' <span>/km</span></span>'+
-          wetterTeil(l)+
-          '<span class="bild-marke">'+(l.hatBild ? "▣" : "")+"</span>"+
-        "</button>"+
-        (offenerLauf === l.id ? detailHtml(l) : "")+
-      "</article>";
-    }).join("");
-
-    liste.querySelectorAll(".lauf").forEach(karte=>{
-      const id = karte.dataset.id;
-      karte.querySelector(".zeile").addEventListener("click", ()=>{
-        offenerLauf = offenerLauf === id ? null : id;
-        zeichneListe();
-        if(offenerLauf === id) zeigeBild(id);
-      });
-      const b = karte.querySelector("[data-bearbeiten]");
-      if(b) b.addEventListener("click", ()=>oeffneFormular(laeufe.find(x=>x.id === id)));
-      const w = karte.querySelector("[data-loeschen]");
-      if(w) w.addEventListener("click", ()=>loesche(id));
-    });
-  }
-
-  function detailHtml(l){
-    const km_h = l.sek > 0 ? l.km / (l.sek/3600) : 0;
-    const felder = [
-      ["Geschwindigkeit", zahl(km_h,2)+" km/h"],
-      ["Dauer", zeitText(l.sek)+" h"],
-      l.zeit ? ["Startzeit", sichern(l.zeit)+" Uhr"] : null,
-      l.ort ? ["Strecke", sichern(l.ort)] : null,
-      l.wetterOrt ? ["Wetterort", sichern(l.wetterOrt)] : null,
-      l.temp !== "" && l.temp != null ? ["Temperatur", zahl(l.temp,1)+" °C"] : null,
-      l.feuchte !== "" && l.feuchte != null ? ["Luftfeuchte", Math.round(l.feuchte)+" %"] : null,
-      l.regen !== "" && l.regen != null ? ["Niederschlag", zahl(l.regen,1)+" mm"] : null,
-      l.wolken !== "" && l.wolken != null ? ["Bewölkung", Math.round(l.wolken)+" % · "+himmelName(l.wolken)] : null
-    ].filter(Boolean);
-
-    return '<div class="detail">'+
-      '<div class="detail-daten">'+
-        felder.map(([k,v])=>'<div class="dd"><span class="k">'+k+'</span><span class="v">'+v+"</span></div>").join("")+
-        (l.notiz ? '<p class="notiz">'+sichern(l.notiz)+"</p>" : "")+
-        '<div class="detail-aktionen">'+
-          '<button class="knopf-still betont" data-bearbeiten>Lauf bearbeiten</button>'+
-          '<button class="knopf-still gefahr" data-loeschen>Lauf löschen</button>'+
-        "</div>"+
-      "</div>"+
-      '<div class="detail-bild" data-bildfeld>'+
-        (l.hatBild ? '<div class="bild-platz">Bild wird geladen …</div>'
-                   : '<div class="bild-platz">Kein Streckenbild hinterlegt</div>')+
-      "</div></div>";
-  }
-
-  async function zeigeBild(id){
-    const lauf = laeufe.find(l=>l.id === id);
-    if(!lauf || !lauf.hatBild) return;
-    const feld = document.querySelector('.lauf[data-id="'+id+'"] [data-bildfeld]');
-    if(!feld) return;
-    const daten = await ladeBild(id);
-    if(offenerLauf !== id) return;
-    feld.innerHTML = daten
-      ? '<img class="strecke-bild" src="'+daten+'" alt="Streckenbild vom Lauf am '+datumText(lauf.datum).tag+'">'
-      : '<div class="bild-platz">Bild nicht gefunden</div>';
-  }
-
-  async function loesche(id){
-    const l = laeufe.find(x=>x.id === id);
-    if(!l) return;
-    if(!confirm("Diesen Lauf vom "+datumText(l.datum).tag+" löschen? Das lässt sich nicht rückgängig machen.")) return;
-    laeufe = laeufe.filter(x=>x.id !== id);
-    offenerLauf = null;
-    delete bildZwischen[id];
-    await Speicher.entferne(BILD_PRAEFIX + id);
-    await speichereLaeufe();
-    alles();
-  }
-
-  /* ---------- Wetterabruf über Open-Meteo ---------- */
-  let letzterOrt = null;   // {name, lat, lon}
-
-  async function ortSuchen(name){
-    const u = "https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&format=json&name="
-      + encodeURIComponent(name);
-    const a = await fetch(u);
-    if(!a.ok) throw new Error("Die Ortssuche antwortet nicht.");
-    const d = await a.json();
-    if(!d.results || !d.results.length) throw new Error("Diesen Ort gibt es nicht in der Ortsliste.");
-    const t = d.results[0];
-    return { name: t.name + (t.admin1 ? ", " + t.admin1 : ""), lat: t.latitude, lon: t.longitude };
-  }
-
-  function gpsHolen(){
-    return new Promise((ok, fehl)=>{
-      if(!navigator.geolocation) return fehl(new Error("Dieses Gerät gibt den Standort nicht heraus."));
-      navigator.geolocation.getCurrentPosition(
-        p=>ok({ name: zahl(p.coords.latitude,3)+" / "+zahl(p.coords.longitude,3),
-                lat: p.coords.latitude, lon: p.coords.longitude }),
-        e=>fehl(new Error(e.code === 1
-          ? "Der Zugriff auf den Standort wurde abgelehnt."
-          : "Der Standort ließ sich nicht bestimmen.")),
-        { timeout: 12000, maximumAge: 600000 });
-    });
-  }
-
-  async function wetterHolen(ort, datum, zeit, dauerSek){
-    const tageAlt = (Date.now() - alsDatum(datum).getTime()) / 86400000;
-    const basis = tageAlt > 60
-      ? "https://archive-api.open-meteo.com/v1/archive"
-      : "https://api.open-meteo.com/v1/forecast";
-    const u = basis + "?latitude=" + ort.lat + "&longitude=" + ort.lon
-      + "&start_date=" + datum + "&end_date=" + datum
-      + "&hourly=temperature_2m,relative_humidity_2m,precipitation,cloud_cover&timezone=auto";
-
-    const a = await fetch(u);
-    if(!a.ok) throw new Error("Der Wetterdienst antwortet nicht (" + a.status + ").");
-    const d = await a.json();
-    const st = d && d.hourly;
-    if(!st || !Array.isArray(st.temperature_2m)) throw new Error("Für diesen Tag liegen keine Werte vor.");
-
-    // Stundenfenster: von der Startzeit über die Dauer des Laufs
-    let von = 0, bis = 23;
-    if(zeit){
-      const stunde = Number(String(zeit).slice(0,2));
-      von = Math.max(0, Math.min(23, stunde));
-      bis = Math.min(23, von + Math.max(0, Math.ceil((dauerSek || 0) / 3600) - 1));
-    }
-    const werte = (reihe)=>{
-      const w = [];
-      for(let i = von; i <= bis; i++) if(reihe && reihe[i] != null) w.push(Number(reihe[i]));
-      return w;
-    };
-    const mittel = (reihe)=>{ const w = werte(reihe); return w.length ? w.reduce((s,x)=>s+x,0)/w.length : null; };
-    const summe  = (reihe)=>{ const w = werte(reihe); return w.length ? w.reduce((s,x)=>s+x,0) : null; };
-
-    const temp = mittel(st.temperature_2m);
-    if(temp == null) throw new Error("Für diese Uhrzeit liegen keine Werte vor.");
-    const fe = mittel(st.relative_humidity_2m), re = summe(st.precipitation), wo = mittel(st.cloud_cover);
-    return {
-      temp: Math.round(temp * 10) / 10,
-      feuchte: fe == null ? "" : Math.round(fe),
-      regen: re == null ? "" : Math.round(re * 10) / 10,
-      wolken: wo == null ? 40 : Math.round(wo / 5) * 5,
-      vorhersage: tageAlt < 0.5
-    };
-  }
-
-  /* ---------- Formular ---------- */
-  function oeffneFormular(lauf){
-    bearbeitung = lauf || null;
-    const l = lauf || {};
-    const h = Math.floor((l.sek||0)/3600), m = Math.floor(((l.sek||0)%3600)/60), s = (l.sek||0)%60;
-    const heute = new Date().toISOString().slice(0,10);
-
-    el("formular-raum").innerHTML =
-    '<div class="schleier" id="schleier"><div class="blatt" role="dialog" aria-modal="true" aria-label="Lauf eintragen">'+
-      "<h2>"+(lauf ? "Lauf bearbeiten" : "Lauf eintragen")+"</h2>"+
-      '<p class="untertitel">Datum, Distanz und Dauer genügen</p>'+
-
-      '<div class="feldgruppe">'+
-        '<div class="feld"><label for="f-datum">Datum</label>'+
-          '<input type="date" id="f-datum" value="'+(l.datum||heute)+'"></div>'+
-        '<div class="feld"><label for="f-zeit">Startzeit</label>'+
-          '<input type="time" id="f-zeit" value="'+(l.zeit||"")+'"></div>'+
-        '<div class="feld"><label for="f-km">Distanz in km</label>'+
-          '<input type="text" inputmode="decimal" id="f-km" placeholder="10,4" value="'+(l.km != null ? zahl(l.km,2) : "")+'"></div>'+
-      "</div>"+
-      '<div class="feld" style="margin-bottom:14px"><span class="legende">Dauer std / min / sek</span>'+
-        '<div class="dauer-feld">'+
-          '<input type="number" id="f-h" min="0" placeholder="0" value="'+(lauf ? h : "")+'" aria-label="Stunden">'+
-          '<input type="number" id="f-m" min="0" max="59" placeholder="52" value="'+(lauf ? m : "")+'" aria-label="Minuten">'+
-          '<input type="number" id="f-s" min="0" max="59" placeholder="00" value="'+(lauf ? s : "")+'" aria-label="Sekunden">'+
-        "</div></div>"+
-
-      '<div class="tempo-schau"><span class="gross" id="f-tempo">—</span>'+
-        '<span class="klein">min/km</span>'+
-        '<span class="gross" id="f-kmh" style="margin-left:auto">—</span>'+
-        '<span class="klein">km/h</span></div>'+
-
-      '<div class="abschnitt"><span class="legende">Wetterbedingungen</span>'+
-        '<div class="wetter-auto">'+
-          '<input type="text" id="f-wetterort" placeholder="Ort, z. B. Berlin" value="'+sichern(l.wetterOrt || (letzterOrt ? letzterOrt.name : ""))+'" aria-label="Ort für die Wetterabfrage">'+
-          '<button type="button" class="knopf-still" id="f-gps">Mein Standort</button>'+
-          '<button type="button" class="knopf-still betont" id="f-wetter-knopf">Wetter abrufen</button>'+
-        "</div>"+
-        '<p class="status" id="f-wetter-status">Holt die Werte für Datum und Startzeit von Open-Meteo. Ohne Startzeit wird der Tagesdurchschnitt genommen.</p>'+
-        '<div class="feldgruppe">'+
-          '<div class="feld"><label for="f-temp">Temperatur °C</label>'+
-            '<input type="text" inputmode="decimal" id="f-temp" placeholder="14" value="'+(l.temp ?? "")+'"></div>'+
-          '<div class="feld"><label for="f-feuchte">Luftfeuchte %</label>'+
-            '<input type="number" id="f-feuchte" min="0" max="100" placeholder="72" value="'+(l.feuchte ?? "")+'"></div>'+
-          '<div class="feld"><label for="f-regen">Niederschlag mm</label>'+
-            '<input type="text" inputmode="decimal" id="f-regen" placeholder="0" value="'+(l.regen ?? "")+'"></div>'+
-        "</div>"+
-        '<div class="feld"><label for="f-wolken">Bewölkung</label>'+
-          '<div class="himmel-zeile">'+
-            '<input type="range" class="schieber" id="f-wolken" min="0" max="100" step="5" value="'+(l.wolken ?? 40)+'">'+
-            '<span class="himmel-text" id="f-himmel"></span></div></div>'+
-      "</div>"+
-
-      '<div class="abschnitt">'+
-        '<div class="feld"><label for="f-ort">Strecke oder Ort</label>'+
-          '<input type="text" id="f-ort" placeholder="Runde um den Bötzsee" value="'+sichern(l.ort||"")+'"></div>'+
-        '<div class="feld" style="margin-top:12px"><label for="f-bild">Bild der Laufstrecke</label>'+
-          '<div class="bild-feld">'+
-            '<input type="file" id="f-bild" accept="image/*">'+
-            '<span id="f-bild-schau"></span></div></div>'+
-        '<div class="feld" style="margin-top:12px"><label for="f-notiz">Notiz</label>'+
-          '<textarea id="f-notiz" placeholder="Wie lief es?">'+sichern(l.notiz||"")+"</textarea></div>"+
-      "</div>"+
-
-      '<div class="blatt-fuss"><span class="fehler" id="f-fehler"></span>'+
-        '<button class="knopf-still" id="f-abbruch">Abbrechen</button>'+
-        '<button class="knopf-haupt" id="f-sichern">Eintrag sichern</button></div>'+
-    "</div></div>";
-
-    let neuesBild = undefined;
-    const schau = el("f-bild-schau");
-
-    function bildSchau(quelle){
-      schau.innerHTML = quelle
-        ? '<img class="bild-vorschau" src="'+quelle+'" alt="Vorschau des Streckenbilds"> '+
-          '<button class="knopf-still" type="button" id="f-bild-weg">Entfernen</button>'
-        : "";
-      const w = el("f-bild-weg");
-      if(w) w.addEventListener("click", ()=>{ neuesBild = null; el("f-bild").value = ""; bildSchau(null); });
-    }
-    if(lauf && lauf.thumb) bildSchau(lauf.thumb);
-
-    el("f-bild").addEventListener("change", async (ev)=>{
-      const datei = ev.target.files && ev.target.files[0];
-      if(!datei) return;
-      el("f-fehler").textContent = "";
-      try{ neuesBild = await verkleinern(datei, 1400, .78); bildSchau(neuesBild); }
-      catch(e){ el("f-fehler").textContent = e.message; ev.target.value = ""; }
-    });
-
-    function zahlAus(wert){
-      const t = String(wert).trim().replace(",", ".");
-      if(t === "") return null;
-      const n = Number(t);
-      return isFinite(n) ? n : null;
-    }
-    function rechne(){
-      const km = zahlAus(el("f-km").value) || 0;
-      const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
-      el("f-tempo").textContent = km > 0 && sek > 0 ? tempoText(sek/km) : "—";
-      el("f-kmh").textContent = km > 0 && sek > 0 ? zahl(km/(sek/3600),1) : "—";
-    }
-    function himmelSchau(){
-      const v = el("f-wolken").value;
-      el("f-himmel").textContent = v+" % · "+himmelName(v);
-    }
-    ["f-km","f-h","f-m","f-s"].forEach(i=>el(i).addEventListener("input", rechne));
-    el("f-wolken").addEventListener("input", himmelSchau);
-    rechne(); himmelSchau();
-
-    /* Wetter automatisch holen */
-    let ortMerker = l.wetterOrt && letzterOrt && letzterOrt.name === l.wetterOrt ? letzterOrt : letzterOrt;
-    function stand(text, art){
-      const p = el("f-wetter-status");
-      p.textContent = text;
-      p.className = "status" + (art ? " " + art : "");
-    }
-    async function wetterAbrufen(){
-      const knopf = el("f-wetter-knopf");
-      const datum = el("f-datum").value;
-      if(!datum){ stand("Trag zuerst das Datum ein.", "warnung"); return; }
-      const eingabe = el("f-wetterort").value.trim();
-      if(!eingabe && !ortMerker){ stand("Trag einen Ort ein oder nimm deinen Standort.", "warnung"); return; }
-
-      knopf.disabled = true;
-      try{
-        if(!ortMerker || (eingabe && eingabe !== ortMerker.name)){
-          stand("Ort wird gesucht …");
-          ortMerker = await ortSuchen(eingabe);
-          el("f-wetterort").value = ortMerker.name;
-        }
-        stand("Wetter wird geholt …");
-        const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
-        const w = await wetterHolen(ortMerker, datum, el("f-zeit").value, sek);
-        el("f-temp").value = zahl(w.temp, 1);
-        el("f-feuchte").value = w.feuchte;
-        el("f-regen").value = w.regen === "" ? "" : zahl(w.regen, 1);
-        el("f-wolken").value = w.wolken;
-        himmelSchau();
-        letzterOrt = ortMerker;
-        try{ await Speicher.setze("laufbuch:ort", JSON.stringify(ortMerker)); }catch(e){}
-        stand((w.vorhersage ? "Vorhersage" : "Messwerte") + " für " + ortMerker.name +
-          (el("f-zeit").value ? " um " + el("f-zeit").value + " Uhr" : ", Tagesdurchschnitt") +
-          " eingetragen. Du kannst sie von Hand überschreiben.", "gut");
-      }catch(e){
-        stand(e.message + " Trag die Werte von Hand ein.", "warnung");
-      }finally{
-        knopf.disabled = false;
-      }
-    }
-    el("f-wetter-knopf").addEventListener("click", wetterAbrufen);
-    el("f-gps").addEventListener("click", async ()=>{
-      stand("Standort wird bestimmt …");
-      try{
-        ortMerker = await gpsHolen();
-        el("f-wetterort").value = ortMerker.name;
-        await wetterAbrufen();
-      }catch(e){ stand(e.message, "warnung"); }
-    });
-
-    el("f-abbruch").addEventListener("click", schliesse);
-    el("schleier").addEventListener("mousedown", (e)=>{ if(e.target.id === "schleier") schliesse(); });
-    document.addEventListener("keydown", escTaste);
-
-    el("f-sichern").addEventListener("click", async ()=>{
-      const datum = el("f-datum").value;
-      const km = zahlAus(el("f-km").value);
-      const sek = (Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
-      const fehler = el("f-fehler");
-      if(!datum){ fehler.textContent = "Trag ein Datum ein."; return; }
-      if(!km || km <= 0){ fehler.textContent = "Trag die Distanz in Kilometern ein."; return; }
-      if(sek <= 0){ fehler.textContent = "Trag die Dauer ein."; return; }
-      fehler.textContent = "";
-      el("f-sichern").disabled = true;
-
-      const id = bearbeitung ? bearbeitung.id : "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-      const eintrag = {
-        id, datum, km, sek,
-        zeit: el("f-zeit").value || "",
-        wetterOrt: el("f-wetterort").value.trim(),
-        temp: zahlAus(el("f-temp").value) ?? "",
-        feuchte: zahlAus(el("f-feuchte").value) ?? "",
-        regen: zahlAus(el("f-regen").value) ?? "",
-        wolken: Number(el("f-wolken").value),
-        ort: el("f-ort").value.trim(),
-        notiz: el("f-notiz").value.trim(),
-        thumb: bearbeitung ? bearbeitung.thumb || null : null,
-        hatBild: bearbeitung ? !!bearbeitung.hatBild : false
-      };
-
-      if(neuesBild === null){
-        eintrag.thumb = null; eintrag.hatBild = false;
-        delete bildZwischen[id];
-        await Speicher.entferne(BILD_PRAEFIX + id);
-      }else if(typeof neuesBild === "string"){
-        try{ eintrag.thumb = await verkleinern(neuesBild, 200, .5); }catch(e){ eintrag.thumb = null; }
-        eintrag.hatBild = true;
-        bildZwischen[id] = neuesBild;
-        try{ await Speicher.setze(BILD_PRAEFIX + id, neuesBild); }
-        catch(e){
-          eintrag.hatBild = false; delete bildZwischen[id];
-          fehler.textContent = "Das Bild ließ sich nicht speichern, der Lauf wird ohne Bild gesichert.";
-        }
-      }
-
-      if(bearbeitung) laeufe = laeufe.map(l=>l.id === id ? eintrag : l);
-      else laeufe.push(eintrag);
-
-      const ok = await speichereLaeufe();
-      el("f-sichern").disabled = false;
-      if(!ok) return;
-      schliesse();
-      alles();
-    });
-
-    setTimeout(()=>el("f-km").focus(), 30);
-  }
-
-  function escTaste(e){ if(e.key === "Escape") schliesse(); }
-  function schliesse(){
-    el("formular-raum").innerHTML = "";
-    document.removeEventListener("keydown", escTaste);
-    bearbeitung = null;
-  }
-
-  /* ---------- Ausgabe und Sicherung ---------- */
-  function datenAbladen(inhalt, typ, name){
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([inhalt], {type:typ}));
-    a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
-  }
-
-  function csv(){
-    if(!laeufe.length){ meldung("Es gibt noch nichts auszugeben."); return; }
-    const kopf = ["Datum","Startzeit","Kilometer","Dauer","Tempo min/km","km/h","Temperatur C","Luftfeuchte %","Niederschlag mm","Bewoelkung %","Strecke","Notiz"];
-    const zeilen = laeufe.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(l=>[
-      l.datum, l.zeit || "", zahl(l.km,2), zeitText(l.sek), tempoText(tempoVon(l)),
-      zahl(l.sek>0 ? l.km/(l.sek/3600) : 0, 2),
-      l.temp ?? "", l.feuchte ?? "", l.regen ?? "", l.wolken ?? "",
-      l.ort || "", (l.notiz||"").replace(/\s+/g," ")
-    ]);
-    const text = [kopf, ...zeilen].map(r=>r.map(z=>'"'+String(z).replace(/"/g,'""')+'"').join(";")).join("\r\n");
-    datenAbladen("\ufeff"+text, "text/csv;charset=utf-8", "laufbuch.csv");
-  }
-
-  async function sicherung(){
-    if(!laeufe.length){ meldung("Es gibt noch nichts zu sichern."); return; }
-    const knopf = el("json-knopf");
-    knopf.disabled = true; knopf.textContent = "Sammelt Bilder …";
-    const bilder = {};
-    for(const l of laeufe){ if(l.hatBild){ const b = await ladeBild(l.id); if(b) bilder[l.id] = b; } }
-    datenAbladen(JSON.stringify({ art:"laufbuch", fassung:1, erstellt:new Date().toISOString(), laeufe, bilder }),
-      "application/json", "laufbuch-sicherung-"+new Date().toISOString().slice(0,10)+".json");
-    knopf.disabled = false; knopf.textContent = "Sicherung erstellen";
-  }
-
-  async function einlesen(datei){
-    let daten;
-    try{ daten = JSON.parse(await datei.text()); }
-    catch(e){ meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); return; }
-    if(!daten || daten.art !== "laufbuch" || !Array.isArray(daten.laeufe)){
-      meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); return;
-    }
-    if(!confirm("Sicherung einlesen? Vorhandene Einträge mit gleichem Datum und gleicher Distanz werden nicht doppelt angelegt.")) return;
-
-    const kennung = new Set(laeufe.map(l=>l.datum+"|"+l.km+"|"+l.sek));
-    let neu = 0;
-    for(const l of daten.laeufe){
-      if(!l || !l.datum || !l.km) continue;
-      const k = l.datum+"|"+l.km+"|"+l.sek;
-      if(kennung.has(k)) continue;
-      kennung.add(k);
-      laeufe.push(l);
-      neu++;
-      const bild = daten.bilder && daten.bilder[l.id];
-      if(bild){ try{ await Speicher.setze(BILD_PRAEFIX + l.id, bild); bildZwischen[l.id] = bild; }catch(e){} }
-    }
-    await speichereLaeufe();
-    meldung(neu ? neu+(neu === 1 ? " Lauf wurde" : " Läufe wurden")+" eingelesen." : "Alle Einträge waren schon vorhanden.");
-    alles();
-  }
-
-  /* ---------- Start ---------- */
-  function alles(){ fuelleJahre(); zeichneKennzahlen(); zeichneMonate(); zeichneListe(); }
-
-  el("neu-knopf").addEventListener("click", ()=>oeffneFormular(null));
-  el("csv-knopf").addEventListener("click", csv);
-  el("json-knopf").addEventListener("click", sicherung);
-  el("import-knopf").addEventListener("click", ()=>el("import-datei").click());
-  el("import-datei").addEventListener("change", (e)=>{
-    const d = e.target.files && e.target.files[0];
-    if(d) einlesen(d);
-    e.target.value = "";
+    if(typeof quelle === "string") return arbeite(quelle);
+    const leser = new FileReader();
+    leser.onerror = ()=>fehl(new Error("Die Datei ließ sich nicht lesen."));
+    leser.onload = ()=>arbeite(leser.result);
+    leser.readAsDataURL(quelle);
   });
-  el("jahr-filter").addEventListener("change", ()=>{ offenerLauf = null; zeichneKennzahlen(); zeichneListe(); });
-  el("sortierung").addEventListener("change", ()=>{ offenerLauf = null; zeichneListe(); });
+}
+async function bildLink(l){
+  if(!l.bild_pfad) return null;
+  if(bildLinks[l.id]) return bildLinks[l.id];
+  const { data, error } = await sb.storage.from("strecken").createSignedUrl(l.bild_pfad, 3600);
+  if(error || !data) return null;
+  bildLinks[l.id] = data.signedUrl;
+  return data.signedUrl;
+}
 
-  el("hinweis").textContent = Speicher.art === "claude"
-    ? "Daten liegen in diesem Artefakt"
-    : "Daten liegen " + Speicher.name + " · Sicherung regelmäßig erstellen";
+/* ================= Wetter ================= */
+async function ortSuchen(name){
+  const a = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&format=json&name="
+    + encodeURIComponent(name));
+  if(!a.ok) throw new Error("Die Ortssuche antwortet nicht.");
+  const d = await a.json();
+  if(!d.results || !d.results.length) throw new Error("Diesen Ort gibt es nicht in der Ortsliste.");
+  const t = d.results[0];
+  return { name: t.name + (t.admin1 ? ", " + t.admin1 : ""), lat: t.latitude, lon: t.longitude };
+}
+function gpsHolen(){
+  return new Promise((ok, fehl)=>{
+    if(!navigator.geolocation) return fehl(new Error("Dieses Gerät gibt den Standort nicht heraus."));
+    navigator.geolocation.getCurrentPosition(
+      p=>ok({ name: zahl(p.coords.latitude,3)+" / "+zahl(p.coords.longitude,3),
+              lat: p.coords.latitude, lon: p.coords.longitude }),
+      e=>fehl(new Error(e.code === 1 ? "Der Zugriff auf den Standort wurde abgelehnt."
+                                     : "Der Standort ließ sich nicht bestimmen.")),
+      { timeout: 12000, maximumAge: 600000 });
+  });
+}
+async function wetterHolen(ort, datum, zeit, dauerSek){
+  const tageAlt = (Date.now() - alsDatum(datum).getTime()) / 86400000;
+  const basis = tageAlt > 60 ? "https://archive-api.open-meteo.com/v1/archive"
+                             : "https://api.open-meteo.com/v1/forecast";
+  const a = await fetch(basis + "?latitude=" + ort.lat + "&longitude=" + ort.lon +
+    "&start_date=" + datum + "&end_date=" + datum +
+    "&hourly=temperature_2m,relative_humidity_2m,precipitation,cloud_cover&timezone=auto");
+  if(!a.ok) throw new Error("Der Wetterdienst antwortet nicht (" + a.status + ").");
+  const st = (await a.json()).hourly;
+  if(!st || !Array.isArray(st.temperature_2m)) throw new Error("Für diesen Tag liegen keine Werte vor.");
+  let von = 0, bis = 23;
+  if(zeit){
+    von = Math.max(0, Math.min(23, Number(String(zeit).slice(0,2))));
+    bis = Math.min(23, von + Math.max(0, Math.ceil((dauerSek||0)/3600) - 1));
+  }
+  const w = (reihe)=>{ const a2 = []; for(let i=von;i<=bis;i++) if(reihe && reihe[i] != null) a2.push(Number(reihe[i])); return a2; };
+  const mittel = (r)=>{ const x = w(r); return x.length ? x.reduce((s,y)=>s+y,0)/x.length : null; };
+  const summe  = (r)=>{ const x = w(r); return x.length ? x.reduce((s,y)=>s+y,0) : null; };
+  const temp = mittel(st.temperature_2m);
+  if(temp == null) throw new Error("Für diese Uhrzeit liegen keine Werte vor.");
+  const fe = mittel(st.relative_humidity_2m), re = summe(st.precipitation), wo = mittel(st.cloud_cover);
+  return {
+    temp: Math.round(temp*10)/10,
+    feuchte: fe == null ? "" : Math.round(fe),
+    regen: re == null ? "" : Math.round(re*10)/10,
+    wolken: wo == null ? 40 : Math.round(wo/5)*5,
+    vorhersage: tageAlt < 0.5
+  };
+}
 
-  (async function(){
-    await ladeLaeufe();
-    try{ const o = await Speicher.hole("laufbuch:ort"); if(o) letzterOrt = JSON.parse(o); }catch(e){}
-    alles();
-  })();
-})();
+/* ================= Anmeldung ================= */
+function torZeigen(inhalt, unter){
+  el("app").hidden = true;
+  el("tor").hidden = false;
+  el("tor-unter").textContent = unter || "Anmeldung per E-Mail";
+  el("tor-inhalt").innerHTML = inhalt;
+}
+function anmeldeMaske(){
+  torZeigen(
+    '<label for="a-mail">E-Mail-Adresse</label>'+
+    '<input type="email" id="a-mail" autocomplete="email" placeholder="du@beispiel.de">'+
+    '<button class="knopf-haupt" id="a-knopf">Anmeldelink schicken</button>'+
+    '<p class="hilfe" id="a-hilfe">Du bekommst eine E-Mail mit einem Link. Ein Klick darauf meldet dich an — '+
+    'ein Passwort brauchst du nicht. Beim ersten Mal wählst du danach einen Benutzernamen.</p>');
+  const senden = async ()=>{
+    const mail = el("a-mail").value.trim();
+    const knopf = el("a-knopf"), hilfe = el("a-hilfe");
+    if(!mail || !mail.includes("@")){ hilfe.textContent = "Trag eine gültige E-Mail-Adresse ein."; return; }
+    knopf.disabled = true; hilfe.textContent = "Link wird verschickt …";
+    const { error } = await sb.auth.signInWithOtp({
+      email: mail,
+      options: { emailRedirectTo: location.href.split("#")[0] }
+    });
+    knopf.disabled = false;
+    hilfe.textContent = error
+      ? fehlerText(error) + " Bei zu vielen Versuchen hilft es, ein paar Minuten zu warten."
+      : "Schau in dein Postfach. Der Link ist eine Stunde gültig und lässt sich nur einmal verwenden. Diese Seite kannst du offen lassen.";
+  };
+  el("a-knopf").addEventListener("click", senden);
+  el("a-mail").addEventListener("keydown", e=>{ if(e.key === "Enter") senden(); });
+}
+function namensMaske(){
+  torZeigen(
+    '<label for="n-name">Benutzername</label>'+
+    '<input type="text" id="n-name" autocapitalize="none" spellcheck="false" placeholder="z. B. peter_b">'+
+    '<button class="knopf-haupt" id="n-knopf">Profil anlegen</button>'+
+    '<p class="hilfe" id="n-hilfe">Drei bis zwanzig Zeichen, erlaubt sind Kleinbuchstaben, Ziffern und Unterstrich. '+
+    'Unter diesem Namen finden dich deine Freunde — er lässt sich später nicht mehr ändern.</p>',
+    "Einmalig: Profil anlegen");
+  const anlegen = async ()=>{
+    const name = el("n-name").value.trim().toLowerCase();
+    const hilfe = el("n-hilfe"), knopf = el("n-knopf");
+    if(!/^[a-z0-9_]{3,20}$/.test(name)){
+      hilfe.textContent = "Erlaubt sind drei bis zwanzig Zeichen: Kleinbuchstaben, Ziffern, Unterstrich."; return;
+    }
+    knopf.disabled = true; hilfe.textContent = "Wird angelegt …";
+    const { data: sitzung } = await sb.auth.getUser();
+    const { data, error } = await sb.from("profil")
+      .insert({ id: sitzung.user.id, benutzername: name }).select().single();
+    knopf.disabled = false;
+    if(error){ hilfe.textContent = fehlerText(error); return; }
+    ich = data;
+    starten();
+  };
+  el("n-knopf").addEventListener("click", anlegen);
+  el("n-name").addEventListener("keydown", e=>{ if(e.key === "Enter") anlegen(); });
+}
+
+/* ================= Daten laden ================= */
+async function ladeEigene(){
+  const { data, error } = await sb.from("lauf").select("*")
+    .eq("besitzer", ich.id).order("datum", { ascending: false });
+  if(error){ meldung(fehlerText(error)); return; }
+  laeufe = (data || []).map(normieren);
+}
+async function ladeFeed(){
+  const { data, error } = await sb.from("lauf")
+    .select("*, profil(benutzername)")
+    .neq("besitzer", ich.id).order("datum", { ascending: false }).limit(150);
+  if(error){ feed = []; return; }
+  feed = (data || []).map(l=>({ ...normieren(l), wer: l.profil ? l.profil.benutzername : "?" }));
+}
+async function ladeFolgen(){
+  const { data, error } = await sb.from("folge")
+    .select("folger, ziel, status, vom:profil!folge_folger_fkey(benutzername), an:profil!folge_ziel_fkey(benutzername)");
+  folgen = error ? [] : (data || []);
+  const offen = folgen.filter(f=>f.ziel === ich.id && f.status === "offen").length;
+  const b = el("blase");
+  b.hidden = !offen; b.textContent = offen;
+}
+
+/* ================= Kennzahlen ================= */
+function zeitraum(basis){
+  const daten = basis.map(l=>alsDatum(l.datum).getTime()).sort((a,b)=>a-b);
+  const start = daten[0];
+  const jahr = el("jahr-filter").value;
+  let ende = Date.now();
+  if(jahr !== "alle") ende = Math.min(ende, new Date(Number(jahr), 11, 31, 12).getTime());
+  ende = Math.max(ende, daten[daten.length-1]);
+  const tage = Math.max(1, (ende - start)/86400000 + 1);
+  return { wochen: Math.max(1, tage/7), monate: Math.max(1, tage/30.4375) };
+}
+function zeichneKennzahlen(){
+  const basis = gefiltert();
+  const n = basis.length;
+  const kmGesamt = basis.reduce((s,l)=>s+l.km, 0);
+  const sekGesamt = basis.reduce((s,l)=>s+l.sek, 0);
+  const schnitt = kmGesamt > 0 ? sekGesamt/kmGesamt : Infinity;
+  const bester = n ? Math.min(...basis.map(tempoVon)) : Infinity;
+  const sp = n ? zeitraum(basis) : { wochen:1, monate:1 };
+  const felder = [
+    [zahl(kmGesamt,1),"km","Gesamtstrecke"],
+    [n ? stundenText(sekGesamt) : "—","h","Gesamtdauer"],
+    [String(n),"", n === 1 ? "Lauf" : "Läufe"],
+    [n ? zahl(kmGesamt/n,1) : "—","km","Ø je Lauf"],
+    [n ? zahl(kmGesamt/sp.wochen,1) : "—","km","Ø je Woche"],
+    [n ? zahl(kmGesamt/sp.monate,1) : "—","km","Ø je Monat"],
+    [tempoText(schnitt),"min/km","Schnitt-Tempo"],
+    [tempoText(bester),"min/km","Bestes Tempo"]
+  ];
+  el("kennzahlen").innerHTML = felder.map(([w,e,t])=>
+    '<div class="kz"><span class="wert">'+w+(e ? '<span class="einheit">'+e+"</span>" : "")+"</span>"+
+    '<span class="titel">'+t+"</span></div>").join("");
+}
+function zeichneMonate(){
+  const heute = new Date(), koerbe = [];
+  for(let i = 11; i >= 0; i--){
+    const d = new Date(heute.getFullYear(), heute.getMonth()-i, 1);
+    koerbe.push({ j:d.getFullYear(), m:d.getMonth(), km:0 });
+  }
+  laeufe.forEach(l=>{
+    const d = alsDatum(l.datum);
+    const k = koerbe.find(x=>x.j === d.getFullYear() && x.m === d.getMonth());
+    if(k) k.km += l.km;
+  });
+  const max = Math.max(1, ...koerbe.map(k=>k.km));
+  el("monate").innerHTML = koerbe.map((k,i)=>
+    '<div class="monat'+(i === 11 ? " jetzt" : "")+'" title="'+MONATE_KURZ[k.m]+" "+k.j+": "+zahl(k.km,1)+' km">'+
+    '<div class="balken" style="height:'+(k.km/max*100)+'%"></div>'+
+    '<span class="m-name">'+MONATE_KURZ[k.m]+"</span></div>").join("");
+}
+
+/* ================= Liste ================= */
+function gefiltert(){
+  const jahr = el("jahr-filter").value;
+  let l = jahr === "alle" ? laeufe.slice() : laeufe.filter(x=>x.datum.slice(0,4) === jahr);
+  const s = el("sortierung").value;
+  if(s === "datum") l.sort((a,b)=>b.datum.localeCompare(a.datum));
+  if(s === "datum-alt") l.sort((a,b)=>a.datum.localeCompare(b.datum));
+  if(s === "km") l.sort((a,b)=>b.km - a.km);
+  if(s === "tempo") l.sort((a,b)=>tempoVon(a) - tempoVon(b));
+  return l;
+}
+function fuelleJahre(){
+  const w = el("jahr-filter"), alt = w.value;
+  const jahre = Array.from(new Set(laeufe.map(l=>l.datum.slice(0,4)))).sort().reverse();
+  w.innerHTML = '<option value="alle">Alle Jahre</option>' + jahre.map(j=>'<option value="'+j+'">'+j+"</option>").join("");
+  if(alt && Array.from(w.options).some(o=>o.value === alt)) w.value = alt;
+}
+function wetterTeil(l){
+  if(![l.temp,l.feuchte,l.regen,l.wolken].some(v=>v !== "" && v != null)) return '<span class="wetter">—</span>';
+  let s = '<span class="wetter"><span class="grad-punkt" style="background:'+tempFarbe(l.temp)+'"></span>';
+  if(l.temp !== "") s += "<b>"+zahl(l.temp,0)+"°</b>";
+  if(l.feuchte !== "") s += "<span>"+Math.round(l.feuchte)+"%</span>";
+  if(l.regen !== "" && Number(l.regen) > 0) s += "<span>"+zahl(l.regen,1)+"&thinsp;mm</span>";
+  return s + himmelGlyph(l.wolken, l.regen) + "</span>";
+}
+function zeileHtml(l, maxKm, fremd){
+  const d = datumText(l.datum);
+  const breite = Math.max(5, l.km / maxKm * 100);
+  const marken = (l.bild_pfad ? "▣" : "") + (!fremd && l.geteilt ? " ↗" : "");
+  return '<article class="lauf'+(offenerLauf === l.id ? " offen" : "")+'" data-id="'+l.id+'">'+
+    '<button class="zeile zeile-raster" aria-expanded="'+(offenerLauf === l.id)+'">'+
+      '<span class="datum">'+(fremd ? '<span class="wer">'+sichern(l.wer)+"</span>" : "")+
+        '<span class="tag">'+d.tag+'</span><span class="wtag">'+d.wtag+"</span></span>"+
+      '<span class="band-feld"><span class="band-zahl">'+zahl(l.km,2)+' <span>km</span></span>'+
+        '<span class="band"><i style="width:'+breite+'%"></i></span></span>'+
+      '<span class="dauer">'+zeitText(l.sek)+"</span>"+
+      '<span class="tempo">'+tempoText(tempoVon(l))+' <span>/km</span></span>'+
+      wetterTeil(l)+
+      '<span class="marken">'+marken+"</span>"+
+    "</button>"+
+    (offenerLauf === l.id ? detailHtml(l, fremd) : "")+
+  "</article>";
+}
+function detailHtml(l, fremd){
+  const km_h = l.sek > 0 ? l.km/(l.sek/3600) : 0;
+  const felder = [
+    ["Geschwindigkeit", zahl(km_h,2)+" km/h"],
+    ["Dauer", zeitText(l.sek)+" h"],
+    l.zeit ? ["Startzeit", sichern(l.zeit)+" Uhr"] : null,
+    l.ort ? ["Strecke", sichern(l.ort)] : null,
+    l.temp !== "" ? ["Temperatur", zahl(l.temp,1)+" °C"] : null,
+    l.feuchte !== "" ? ["Luftfeuchte", Math.round(l.feuchte)+" %"] : null,
+    l.regen !== "" ? ["Niederschlag", zahl(l.regen,1)+" mm"] : null,
+    l.wolken !== "" ? ["Bewölkung", Math.round(l.wolken)+" % · "+himmelName(l.wolken)] : null,
+    !fremd ? ["Sichtbar", l.geteilt ? "geteilt" : "nur für dich"] : null
+  ].filter(Boolean);
+  return '<div class="detail"><div class="detail-daten">'+
+    felder.map(([k,v])=>'<div class="dd"><span class="k">'+k+'</span><span class="v">'+v+"</span></div>").join("")+
+    (l.notiz ? '<p class="notiz">'+sichern(l.notiz)+"</p>" : "")+
+    (fremd ? "" : '<div class="detail-aktionen">'+
+      '<button class="knopf-still betont" data-bearbeiten>Lauf bearbeiten</button>'+
+      '<button class="knopf-still gefahr" data-loeschen>Lauf löschen</button></div>')+
+    "</div>"+
+    '<div data-bildfeld>'+(l.bild_pfad
+      ? '<div class="bild-platz">Bild wird geladen …</div>'
+      : '<div class="bild-platz">Kein Streckenbild hinterlegt</div>')+"</div></div>";
+}
+function verdrahten(behaelter, daten, fremd){
+  behaelter.querySelectorAll(".lauf").forEach(karte=>{
+    const id = karte.dataset.id;
+    karte.querySelector(".zeile").addEventListener("click", ()=>{
+      offenerLauf = offenerLauf === id ? null : id;
+      zeichneAlles();
+      if(offenerLauf === id) zeigeBild(daten.find(x=>x.id === id));
+    });
+    const b = karte.querySelector("[data-bearbeiten]");
+    if(b) b.addEventListener("click", ()=>oeffneFormular(laeufe.find(x=>x.id === id)));
+    const w = karte.querySelector("[data-loeschen]");
+    if(w) w.addEventListener("click", ()=>loesche(id));
+  });
+}
+function zeichneListe(){
+  const liste = el("liste"), daten = gefiltert();
+  el("zaehler").textContent = daten.length ? daten.length + (daten.length === 1 ? " Eintrag" : " Einträge") : "";
+  if(!laeufe.length){
+    liste.innerHTML = '<div class="leer"><p>Noch kein Eintrag</p><h2>Der erste Lauf fehlt</h2>'+
+      '<button class="knopf-haupt" id="leer-knopf"><span class="plus">+</span> Lauf eintragen</button>'+
+      '<p style="margin-top:20px">Später klappst du jede Zeile per Klick auf, um sie zu ändern oder zu löschen</p></div>';
+    el("leer-knopf").addEventListener("click", ()=>oeffneFormular(null));
+    return;
+  }
+  if(!daten.length){ liste.innerHTML = '<div class="leer"><p>Kein Treffer</p><h2>In diesem Jahr steht nichts</h2></div>'; return; }
+  const maxKm = Math.max(...daten.map(l=>l.km));
+  liste.innerHTML = daten.map(l=>zeileHtml(l, maxKm, false)).join("");
+  verdrahten(liste, daten, false);
+}
+function zeichneFeed(){
+  const f = el("feed");
+  if(!feed.length){
+    f.innerHTML = '<div class="leer"><p>Noch nichts da</p><h2>Dein Feed ist leer</h2>'+
+      '<p style="text-transform:none;letter-spacing:0;font-family:var(--fs-sans);font-size:14px">'+
+      'Hier erscheinen die Läufe der Leute, denen du folgst — sobald sie einen Lauf teilen.</p></div>';
+    return;
+  }
+  const maxKm = Math.max(...feed.map(l=>l.km));
+  f.innerHTML = feed.map(l=>zeileHtml(l, maxKm, true)).join("");
+  verdrahten(f, feed, true);
+}
+async function zeigeBild(l){
+  if(!l || !l.bild_pfad) return;
+  const feld = document.querySelector('.lauf[data-id="'+l.id+'"] [data-bildfeld]');
+  if(!feld) return;
+  const url = await bildLink(l);
+  if(offenerLauf !== l.id) return;
+  feld.innerHTML = url
+    ? '<img class="strecke-bild" src="'+url+'" alt="Streckenbild vom Lauf am '+datumText(l.datum).tag+'">'
+    : '<div class="bild-platz">Bild nicht abrufbar</div>';
+}
+
+/* ================= Freunde ================= */
+function personHtml(name, rolle, knoepfe){
+  return '<div class="person"><span><span class="name">'+sichern(name)+"</span>"+
+    (rolle ? ' <span class="rolle">'+rolle+"</span>" : "")+"</span>"+
+    '<span class="tat">'+knoepfe+"</span></div>";
+}
+function zeichneFreunde(){
+  const anfragen = folgen.filter(f=>f.ziel === ich.id && f.status === "offen");
+  const folgeIch = folgen.filter(f=>f.folger === ich.id);
+  const folgenMir = folgen.filter(f=>f.ziel === ich.id && f.status === "bestaetigt");
+
+  el("block-anfragen").innerHTML = "<h3>Anfragen an dich</h3>" + (anfragen.length
+    ? anfragen.map(f=>personHtml(f.vom ? f.vom.benutzername : "?", "möchte dir folgen",
+        '<button class="knopf-still betont" data-ja="'+f.folger+'">Bestätigen</button>'+
+        '<button class="knopf-still gefahr" data-nein="'+f.folger+'">Ablehnen</button>')).join("")
+    : '<p class="nichts">Keine offenen Anfragen</p>');
+
+  el("block-folge-ich").innerHTML = "<h3>Du folgst</h3>" + (folgeIch.length
+    ? folgeIch.map(f=>personHtml(f.an ? f.an.benutzername : "?",
+        f.status === "offen" ? "Anfrage läuft" : "bestätigt",
+        '<button class="knopf-still gefahr" data-weg-ziel="'+f.ziel+'">'+
+        (f.status === "offen" ? "Zurückziehen" : "Nicht mehr folgen")+"</button>")).join("")
+    : '<p class="nichts">Du folgst noch niemandem</p>');
+
+  el("block-folgen-mir").innerHTML = "<h3>Folgen dir</h3>" + (folgenMir.length
+    ? folgenMir.map(f=>personHtml(f.vom ? f.vom.benutzername : "?", "sieht deine geteilten Läufe",
+        '<button class="knopf-still gefahr" data-weg-folger="'+f.folger+'">Zugriff entziehen</button>')).join("")
+    : '<p class="nichts">Dir folgt noch niemand</p>');
+
+  const a = el("ansicht-freunde");
+  a.querySelectorAll("[data-ja]").forEach(b=>b.addEventListener("click", ()=>bestaetigen(b.dataset.ja, true)));
+  a.querySelectorAll("[data-nein]").forEach(b=>b.addEventListener("click", ()=>bestaetigen(b.dataset.nein, false)));
+  a.querySelectorAll("[data-weg-ziel]").forEach(b=>b.addEventListener("click", ()=>folgeWeg(ich.id, b.dataset.wegZiel)));
+  a.querySelectorAll("[data-weg-folger]").forEach(b=>b.addEventListener("click", ()=>folgeWeg(b.dataset.wegFolger, ich.id)));
+}
+async function anfrageSenden(){
+  const feld = el("such-name"), stat = el("such-status"), knopf = el("such-knopf");
+  const name = feld.value.trim().toLowerCase();
+  const setz = (t, art)=>{ stat.textContent = t; stat.className = "status" + (art ? " " + art : ""); };
+  if(!name){ setz("Trag den Benutzernamen ein.", "warnung"); return; }
+  if(name === ich.benutzername){ setz("Das bist du selbst.", "warnung"); return; }
+  knopf.disabled = true; setz("Wird gesucht …");
+  const { data, error } = await sb.rpc("nutzer_finden", { p_name: name });
+  if(error){ knopf.disabled = false; setz(fehlerText(error), "warnung"); return; }
+  const treffer = Array.isArray(data) ? data[0] : data;
+  if(!treffer){ knopf.disabled = false; setz("Diesen Benutzernamen gibt es nicht. Achte auf die genaue Schreibweise.", "warnung"); return; }
+  const { error: f2 } = await sb.from("folge").insert({ folger: ich.id, ziel: treffer.id });
+  knopf.disabled = false;
+  if(f2){ setz(f2.code === "23505" ? "Die Anfrage läuft bereits." : fehlerText(f2), "warnung"); return; }
+  feld.value = "";
+  setz("Anfrage an " + treffer.benutzername + " verschickt. Sichtbar werden die Läufe erst nach der Bestätigung.", "gut");
+  await ladeFolgen(); zeichneFreunde();
+}
+async function bestaetigen(folgerId, ja){
+  if(ja){
+    const { error } = await sb.from("folge").update({ status: "bestaetigt" })
+      .eq("folger", folgerId).eq("ziel", ich.id);
+    if(error) return meldung(fehlerText(error));
+  }else{
+    const { error } = await sb.from("folge").delete().eq("folger", folgerId).eq("ziel", ich.id);
+    if(error) return meldung(fehlerText(error));
+  }
+  await ladeFolgen(); zeichneFreunde();
+}
+async function folgeWeg(folger, ziel){
+  const { error } = await sb.from("folge").delete().eq("folger", folger).eq("ziel", ziel);
+  if(error) return meldung(fehlerText(error));
+  await ladeFolgen(); await ladeFeed(); zeichneAlles();
+}
+
+/* ================= Formular ================= */
+function oeffneFormular(lauf){
+  bearbeitung = lauf || null;
+  const l = lauf || {};
+  const h = Math.floor((l.sek||0)/3600), m = Math.floor(((l.sek||0)%3600)/60), s = (l.sek||0)%60;
+  const heute = new Date().toISOString().slice(0,10);
+
+  el("formular-raum").innerHTML =
+  '<div class="schleier" id="schleier"><div class="blatt" role="dialog" aria-modal="true" aria-label="Lauf eintragen">'+
+    "<h2>"+(lauf ? "Lauf bearbeiten" : "Lauf eintragen")+"</h2>"+
+    '<p class="untertitel">Datum, Distanz und Dauer genügen</p>'+
+    '<div class="feldgruppe">'+
+      '<div class="feld"><label for="f-datum">Datum</label><input type="date" id="f-datum" value="'+(l.datum||heute)+'"></div>'+
+      '<div class="feld"><label for="f-zeit">Startzeit</label><input type="time" id="f-zeit" value="'+(l.zeit||"")+'"></div>'+
+      '<div class="feld"><label for="f-km">Distanz in km</label><input type="text" inputmode="decimal" id="f-km" placeholder="10,4" value="'+(l.km != null ? zahl(l.km,2) : "")+'"></div>'+
+    "</div>"+
+    '<div class="feld" style="margin-bottom:14px"><span class="legende">Dauer std / min / sek</span>'+
+      '<div class="dauer-feld">'+
+        '<input type="number" id="f-h" min="0" placeholder="0" value="'+(lauf ? h : "")+'" aria-label="Stunden">'+
+        '<input type="number" id="f-m" min="0" max="59" placeholder="52" value="'+(lauf ? m : "")+'" aria-label="Minuten">'+
+        '<input type="number" id="f-s" min="0" max="59" placeholder="00" value="'+(lauf ? s : "")+'" aria-label="Sekunden">'+
+      "</div></div>"+
+    '<div class="tempo-schau"><span class="gross" id="f-tempo">—</span><span class="klein">min/km</span>'+
+      '<span class="gross" id="f-kmh" style="margin-left:auto">—</span><span class="klein">km/h</span></div>'+
+    '<div class="abschnitt"><span class="legende">Wetterbedingungen</span>'+
+      '<div class="wetter-auto">'+
+        '<input type="text" id="f-wetterort" placeholder="Ort, z. B. Berlin" value="'+sichern(l.wetterort || (letzterOrt ? letzterOrt.name : ""))+'" aria-label="Ort für die Wetterabfrage">'+
+        '<button type="button" class="knopf-still" id="f-gps">Mein Standort</button>'+
+        '<button type="button" class="knopf-still betont" id="f-wetter-knopf">Wetter abrufen</button>'+
+      "</div>"+
+      '<p class="status" id="f-wetter-status">Holt die Werte für Datum und Startzeit von Open-Meteo. Ohne Startzeit wird der Tagesdurchschnitt genommen.</p>'+
+      '<div class="feldgruppe">'+
+        '<div class="feld"><label for="f-temp">Temperatur °C</label><input type="text" inputmode="decimal" id="f-temp" placeholder="14" value="'+(l.temp ?? "")+'"></div>'+
+        '<div class="feld"><label for="f-feuchte">Luftfeuchte %</label><input type="number" id="f-feuchte" min="0" max="100" placeholder="72" value="'+(l.feuchte ?? "")+'"></div>'+
+        '<div class="feld"><label for="f-regen">Niederschlag mm</label><input type="text" inputmode="decimal" id="f-regen" placeholder="0" value="'+(l.regen ?? "")+'"></div>'+
+      "</div>"+
+      '<div class="feld"><label for="f-wolken">Bewölkung</label><div class="himmel-zeile">'+
+        '<input type="range" class="schieber" id="f-wolken" min="0" max="100" step="5" value="'+(l.wolken === "" || l.wolken == null ? 40 : l.wolken)+'">'+
+        '<span class="himmel-text" id="f-himmel"></span></div></div>'+
+    "</div>"+
+    '<div class="abschnitt">'+
+      '<div class="feld"><label for="f-ort">Strecke oder Ort</label><input type="text" id="f-ort" placeholder="Runde um den Bötzsee" value="'+sichern(l.ort||"")+'"></div>'+
+      '<div class="feld" style="margin-top:12px"><label for="f-bild">Bild der Laufstrecke</label>'+
+        '<div class="bild-feld"><input type="file" id="f-bild" accept="image/*"><span id="f-bild-schau"></span></div></div>'+
+      '<div class="feld" style="margin-top:12px"><label for="f-notiz">Notiz</label>'+
+        '<textarea id="f-notiz" placeholder="Wie lief es?">'+sichern(l.notiz||"")+"</textarea></div>"+
+      '<label class="teilen"><input type="checkbox" id="f-geteilt"'+(l.geteilt ? " checked" : "")+'>'+
+        '<span class="txt"><b>Mit deinen Freunden teilen</b>'+
+        'Nur Leute, deren Anfrage du bestätigt hast, sehen diesen Lauf. Ohne Haken bleibt er allein bei dir.</span></label>'+
+    "</div>"+
+    '<div class="blatt-fuss"><span class="fehler" id="f-fehler"></span>'+
+      '<button class="knopf-still" id="f-abbruch">Abbrechen</button>'+
+      '<button class="knopf-haupt" id="f-sichern">Eintrag sichern</button></div>'+
+  "</div></div>";
+
+  let neuesBild;              // undefined = unverändert, null = entfernt, Blob = neu
+  const schau = el("f-bild-schau");
+  function bildSchau(url){
+    schau.innerHTML = url ? '<img class="bild-vorschau" src="'+url+'" alt="Vorschau des Streckenbilds"> '+
+      '<button class="knopf-still" type="button" id="f-bild-weg">Entfernen</button>' : "";
+    const w = el("f-bild-weg");
+    if(w) w.addEventListener("click", ()=>{ neuesBild = null; el("f-bild").value = ""; bildSchau(null); });
+  }
+  if(lauf && lauf.bild_pfad) bildLink(lauf).then(u=>{ if(u && neuesBild === undefined) bildSchau(u); });
+
+  el("f-bild").addEventListener("change", async (ev)=>{
+    const datei = ev.target.files && ev.target.files[0];
+    if(!datei) return;
+    el("f-fehler").textContent = "";
+    try{
+      neuesBild = await verkleinern(datei, 1400, .78);
+      bildSchau(URL.createObjectURL(neuesBild));
+    }catch(e){ el("f-fehler").textContent = e.message; ev.target.value = ""; }
+  });
+
+  const sekAus = ()=>(Number(el("f-h").value)||0)*3600 + (Number(el("f-m").value)||0)*60 + (Number(el("f-s").value)||0);
+  function rechne(){
+    const km = zahlOderNull(el("f-km").value) || 0, sek = sekAus();
+    el("f-tempo").textContent = km > 0 && sek > 0 ? tempoText(sek/km) : "—";
+    el("f-kmh").textContent = km > 0 && sek > 0 ? zahl(km/(sek/3600),1) : "—";
+  }
+  function himmelSchau(){ el("f-himmel").textContent = el("f-wolken").value+" % · "+himmelName(el("f-wolken").value); }
+  ["f-km","f-h","f-m","f-s"].forEach(i=>el(i).addEventListener("input", rechne));
+  el("f-wolken").addEventListener("input", himmelSchau);
+  rechne(); himmelSchau();
+
+  let ortMerker = letzterOrt;
+  const stand = (t, art)=>{ const p = el("f-wetter-status"); p.textContent = t; p.className = "status"+(art ? " "+art : ""); };
+  async function wetterAbrufen(){
+    const knopf = el("f-wetter-knopf"), datum = el("f-datum").value;
+    if(!datum) return stand("Trag zuerst das Datum ein.", "warnung");
+    const eingabe = el("f-wetterort").value.trim();
+    if(!eingabe && !ortMerker) return stand("Trag einen Ort ein oder nimm deinen Standort.", "warnung");
+    knopf.disabled = true;
+    try{
+      if(!ortMerker || (eingabe && eingabe !== ortMerker.name)){
+        stand("Ort wird gesucht …");
+        ortMerker = await ortSuchen(eingabe);
+        el("f-wetterort").value = ortMerker.name;
+      }
+      stand("Wetter wird geholt …");
+      const w = await wetterHolen(ortMerker, datum, el("f-zeit").value, sekAus());
+      el("f-temp").value = zahl(w.temp,1);
+      el("f-feuchte").value = w.feuchte;
+      el("f-regen").value = w.regen === "" ? "" : zahl(w.regen,1);
+      el("f-wolken").value = w.wolken;
+      himmelSchau();
+      letzterOrt = ortMerker;
+      try{ localStorage.setItem("laufbuch:ort", JSON.stringify(ortMerker)); }catch(e){}
+      stand((w.vorhersage ? "Vorhersage" : "Messwerte")+" für "+ortMerker.name+
+        (el("f-zeit").value ? " um "+el("f-zeit").value+" Uhr" : ", Tagesdurchschnitt")+
+        " eingetragen. Du kannst sie von Hand überschreiben.", "gut");
+    }catch(e){ stand(e.message+" Trag die Werte von Hand ein.", "warnung"); }
+    finally{ knopf.disabled = false; }
+  }
+  el("f-wetter-knopf").addEventListener("click", wetterAbrufen);
+  el("f-gps").addEventListener("click", async ()=>{
+    stand("Standort wird bestimmt …");
+    try{ ortMerker = await gpsHolen(); el("f-wetterort").value = ortMerker.name; await wetterAbrufen(); }
+    catch(e){ stand(e.message, "warnung"); }
+  });
+
+  el("f-abbruch").addEventListener("click", schliesse);
+  el("schleier").addEventListener("mousedown", e=>{ if(e.target.id === "schleier") schliesse(); });
+  document.addEventListener("keydown", escTaste);
+
+  el("f-sichern").addEventListener("click", async ()=>{
+    const fehler = el("f-fehler"), knopf = el("f-sichern");
+    const datum = el("f-datum").value, km = zahlOderNull(el("f-km").value), sek = sekAus();
+    if(!datum) return fehler.textContent = "Trag ein Datum ein.";
+    if(!km || km <= 0) return fehler.textContent = "Trag die Distanz in Kilometern ein.";
+    if(sek <= 0) return fehler.textContent = "Trag die Dauer ein.";
+    fehler.textContent = ""; knopf.disabled = true;
+
+    const satz = {
+      besitzer: ich.id, datum, km, sek,
+      zeit: el("f-zeit").value || null,
+      temp: zahlOderNull(el("f-temp").value),
+      feuchte: zahlOderNull(el("f-feuchte").value),
+      regen: zahlOderNull(el("f-regen").value),
+      wolken: Number(el("f-wolken").value),
+      ort: el("f-ort").value.trim() || null,
+      wetterort: el("f-wetterort").value.trim() || null,
+      notiz: el("f-notiz").value.trim() || null,
+      geteilt: el("f-geteilt").checked
+    };
+
+    let zeile, fehl;
+    if(bearbeitung){
+      ({ data: zeile, error: fehl } = await sb.from("lauf").update(satz).eq("id", bearbeitung.id).select().single());
+    }else{
+      ({ data: zeile, error: fehl } = await sb.from("lauf").insert(satz).select().single());
+    }
+    if(fehl){ knopf.disabled = false; fehler.textContent = fehlerText(fehl); return; }
+
+    if(neuesBild === null && zeile.bild_pfad){
+      await sb.storage.from("strecken").remove([zeile.bild_pfad]);
+      await sb.from("lauf").update({ bild_pfad: null }).eq("id", zeile.id);
+      zeile.bild_pfad = null; delete bildLinks[zeile.id];
+    }else if(neuesBild instanceof Blob){
+      const pfad = ich.id + "/" + zeile.id + ".jpg";
+      const { error: e2 } = await sb.storage.from("strecken")
+        .upload(pfad, neuesBild, { upsert: true, contentType: "image/jpeg" });
+      if(e2){ fehler.textContent = "Der Lauf ist gesichert, das Bild aber nicht: " + fehlerText(e2); }
+      else{
+        await sb.from("lauf").update({ bild_pfad: pfad }).eq("id", zeile.id);
+        zeile.bild_pfad = pfad; delete bildLinks[zeile.id];
+      }
+    }
+
+    knopf.disabled = false;
+    schliesse();
+    await ladeEigene(); zeichneAlles();
+  });
+
+  setTimeout(()=>el("f-km").focus(), 30);
+}
+function escTaste(e){ if(e.key === "Escape") schliesse(); }
+function schliesse(){
+  el("formular-raum").innerHTML = "";
+  document.removeEventListener("keydown", escTaste);
+  bearbeitung = null;
+}
+async function loesche(id){
+  const l = laeufe.find(x=>x.id === id);
+  if(!l) return;
+  if(!confirm("Diesen Lauf vom "+datumText(l.datum).tag+" löschen? Das lässt sich nicht rückgängig machen.")) return;
+  if(l.bild_pfad) await sb.storage.from("strecken").remove([l.bild_pfad]);
+  const { error } = await sb.from("lauf").delete().eq("id", id);
+  if(error) return meldung(fehlerText(error));
+  offenerLauf = null; delete bildLinks[id];
+  await ladeEigene(); zeichneAlles();
+}
+
+/* ================= Ausgabe und Sicherung ================= */
+function datenAbladen(inhalt, typ, name){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([inhalt], { type: typ }));
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+function csv(){
+  if(!laeufe.length) return meldung("Es gibt noch nichts auszugeben.");
+  const kopf = ["Datum","Startzeit","Kilometer","Dauer","Tempo min/km","km/h","Temperatur C","Luftfeuchte %","Niederschlag mm","Bewoelkung %","Strecke","Notiz","geteilt"];
+  const zeilen = laeufe.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).map(l=>[
+    l.datum, l.zeit||"", zahl(l.km,2), zeitText(l.sek), tempoText(tempoVon(l)),
+    zahl(l.sek>0 ? l.km/(l.sek/3600) : 0, 2),
+    l.temp, l.feuchte, l.regen, l.wolken, l.ort||"", (l.notiz||"").replace(/\s+/g," "), l.geteilt ? "ja" : "nein"
+  ]);
+  datenAbladen("\ufeff"+[kopf,...zeilen].map(r=>r.map(z=>'"'+String(z).replace(/"/g,'""')+'"').join(";")).join("\r\n"),
+    "text/csv;charset=utf-8", "laufbuch.csv");
+}
+async function sicherung(){
+  if(!laeufe.length) return meldung("Es gibt noch nichts zu sichern.");
+  const knopf = el("json-knopf");
+  knopf.disabled = true; knopf.textContent = "Sammelt …";
+  const bilder = {};
+  for(const l of laeufe){
+    if(!l.bild_pfad) continue;
+    try{
+      const url = await bildLink(l);
+      if(!url) continue;
+      const blob = await (await fetch(url)).blob();
+      bilder[l.id] = await new Promise(ok=>{ const r = new FileReader(); r.onload = ()=>ok(r.result); r.readAsDataURL(blob); });
+    }catch(e){}
+  }
+  datenAbladen(JSON.stringify({ art:"laufbuch", fassung:2, erstellt:new Date().toISOString(), laeufe, bilder }),
+    "application/json", "laufbuch-sicherung-"+new Date().toISOString().slice(0,10)+".json");
+  knopf.disabled = false; knopf.textContent = "Sicherung";
+}
+async function einlesen(datei){
+  let daten;
+  try{ daten = JSON.parse(await datei.text()); }catch(e){ return meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); }
+  if(!daten || daten.art !== "laufbuch" || !Array.isArray(daten.laeufe))
+    return meldung("Diese Datei ist keine gültige Laufbuch-Sicherung.");
+  if(!confirm("Sicherung einlesen? Einträge mit gleichem Datum, gleicher Distanz und gleicher Dauer werden übersprungen.")) return;
+
+  const knopf = el("import-knopf");
+  knopf.disabled = true; knopf.textContent = "Liest ein …";
+  const vorhanden = new Set(laeufe.map(l=>l.datum+"|"+l.km+"|"+l.sek));
+  let neu = 0, fehler = 0;
+  for(const a of daten.laeufe){
+    if(!a || !a.datum || !a.km || !a.sek) continue;
+    const k = a.datum+"|"+Number(a.km)+"|"+Number(a.sek);
+    if(vorhanden.has(k)) continue;
+    vorhanden.add(k);
+    const satz = {
+      besitzer: ich.id, datum: a.datum, km: Number(a.km), sek: Number(a.sek),
+      zeit: a.zeit || null,
+      temp: a.temp === "" || a.temp == null ? null : Number(a.temp),
+      feuchte: a.feuchte === "" || a.feuchte == null ? null : Number(a.feuchte),
+      regen: a.regen === "" || a.regen == null ? null : Number(a.regen),
+      wolken: a.wolken === "" || a.wolken == null ? null : Number(a.wolken),
+      ort: a.ort || null, wetterort: a.wetterOrt || a.wetterort || null,
+      notiz: a.notiz || null, geteilt: !!a.geteilt
+    };
+    const { data: zeile, error } = await sb.from("lauf").insert(satz).select().single();
+    if(error){ fehler++; continue; }
+    neu++;
+    const bild = daten.bilder && daten.bilder[a.id];
+    if(bild){
+      try{
+        const blob = await (await fetch(bild)).blob();
+        const pfad = ich.id + "/" + zeile.id + ".jpg";
+        const { error: e2 } = await sb.storage.from("strecken").upload(pfad, blob, { upsert:true, contentType:"image/jpeg" });
+        if(!e2) await sb.from("lauf").update({ bild_pfad: pfad }).eq("id", zeile.id);
+      }catch(e){}
+    }
+  }
+  knopf.disabled = false; knopf.textContent = "Sicherung einlesen";
+  meldung(neu ? neu+(neu === 1 ? " Lauf wurde" : " Läufe wurden")+" eingelesen."+(fehler ? " "+fehler+" konnten nicht angelegt werden." : "")
+              : "Alle Einträge waren schon vorhanden.", !!neu);
+  await ladeEigene(); zeichneAlles();
+}
+async function kontoLoeschen(){
+  if(!confirm("Dein Konto und alle Läufe werden endgültig gelöscht. Fortfahren?")) return;
+  if(!confirm("Wirklich sicher? Es gibt keine Wiederherstellung. Eine Sicherung solltest du vorher erstellt haben.")) return;
+  const pfade = laeufe.filter(l=>l.bild_pfad).map(l=>l.bild_pfad);
+  if(pfade.length) await sb.storage.from("strecken").remove(pfade);
+  const { error } = await sb.rpc("konto_loeschen");
+  if(error) return meldung(fehlerText(error));
+  await sb.auth.signOut();
+  location.reload();
+}
+
+/* ================= Ansicht ================= */
+function zeichneAlles(){
+  if(reiter === "eigen"){ fuelleJahre(); zeichneKennzahlen(); zeichneMonate(); zeichneListe(); }
+  if(reiter === "feed") zeichneFeed();
+  if(reiter === "freunde") zeichneFreunde();
+}
+function reiterSetzen(name){
+  reiter = name; offenerLauf = null;
+  document.querySelectorAll(".reiter button").forEach(b=>b.classList.toggle("aktiv", b.dataset.reiter === name));
+  el("ansicht-eigen").hidden = name !== "eigen";
+  el("ansicht-feed").hidden = name !== "feed";
+  el("ansicht-freunde").hidden = name !== "freunde";
+  zeichneAlles();
+}
+document.querySelectorAll(".reiter button").forEach(b=>
+  b.addEventListener("click", ()=>reiterSetzen(b.dataset.reiter)));
+el("neu-knopf").addEventListener("click", ()=>oeffneFormular(null));
+el("csv-knopf").addEventListener("click", csv);
+el("json-knopf").addEventListener("click", sicherung);
+el("import-knopf").addEventListener("click", ()=>el("import-datei").click());
+el("import-datei").addEventListener("change", e=>{ const d = e.target.files && e.target.files[0]; if(d) einlesen(d); e.target.value = ""; });
+el("jahr-filter").addEventListener("change", ()=>{ offenerLauf = null; zeichneKennzahlen(); zeichneListe(); });
+el("sortierung").addEventListener("change", ()=>{ offenerLauf = null; zeichneListe(); });
+el("such-knopf").addEventListener("click", anfrageSenden);
+el("such-name").addEventListener("keydown", e=>{ if(e.key === "Enter") anfrageSenden(); });
+el("abmelden").addEventListener("click", async ()=>{ await sb.auth.signOut(); location.reload(); });
+el("konto-weg").addEventListener("click", kontoLoeschen);
+
+/* ================= Start ================= */
+async function starten(){
+  el("tor").hidden = true;
+  el("app").hidden = false;
+  el("ich-name").textContent = "@" + ich.benutzername;
+  try{ const o = localStorage.getItem("laufbuch:ort"); if(o) letzterOrt = JSON.parse(o); }catch(e){}
+  await Promise.all([ladeEigene(), ladeFeed(), ladeFolgen()]);
+  zeichneAlles();
+}
+async function pruefen(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ anmeldeMaske(); return; }
+  const { data, error } = await sb.from("profil").select("id, benutzername").eq("id", session.user.id).maybeSingle();
+  if(error){ torZeigen('<p class="hilfe">'+sichern(fehlerText(error))+"</p>", "Fehler"); return; }
+  if(!data){ namensMaske(); return; }
+  ich = data;
+  starten();
+}
+sb.auth.onAuthStateChange((ereignis)=>{
+  if(ereignis === "SIGNED_IN" && !ich) pruefen();
+});
+pruefen();
 </script>
 </body>
 </html>
