@@ -265,14 +265,14 @@
   </header>
 
   <nav class="reiter">
-    <button data-reiter="eigen" class="aktiv">Mein Running Record</button>
+    <button data-reiter="eigen" class="aktiv">Meine Läufe</button>
     <button data-reiter="feed">Feed</button>
     <button data-reiter="freunde">Freunde<span class="blase" id="blase" hidden></span></button>
   </nav>
 
   <div id="meldung-feld"></div>
 
-  <!-- Mein Running Record -->
+  <!-- Meine Läufe -->
   <section id="ansicht-eigen">
     <div class="kennzahlen" id="kennzahlen"></div>
     <div class="monate" id="monate"></div>
@@ -333,8 +333,8 @@
    Den service_role key niemals hier eintragen.
    ================================================================== */
 const KONFIG = {
-  url:        "https://fjozvjyqjjjrrtcaqnmn.supabase.co",
-  schluessel: "sb_publishable_rgOzEVqnck1IR5StCsAxrw_Vtj0N_G4"
+  url:        "HIER_DEINE_PROJECT_URL",
+  schluessel: "HIER_DEIN_ANON_KEY"
 };
 /* ================================================================== */
 
@@ -1003,6 +1003,7 @@ function oeffneFormular(lauf){
     }
     if(fehl){ knopf.disabled = false; fehler.textContent = fehlerText(fehl); return; }
 
+    let bildFehler = false;
     if(neuesBild === null && zeile.bild_pfad){
       await sb.storage.from("strecken").remove([zeile.bild_pfad]);
       await sb.from("lauf").update({ bild_pfad: null }).eq("id", zeile.id);
@@ -1011,16 +1012,24 @@ function oeffneFormular(lauf){
       const pfad = ich.id + "/" + zeile.id + ".jpg";
       const { error: e2 } = await sb.storage.from("strecken")
         .upload(pfad, neuesBild, { upsert: true, contentType: "image/jpeg" });
-      if(e2){ fehler.textContent = "Der Lauf ist gesichert, das Bild aber nicht: " + fehlerText(e2); }
-      else{
+      if(e2){
+        bildFehler = true;
+        fehler.textContent = "Der Lauf ist gesichert, das Bild aber nicht: " + fehlerText(e2);
+      }else{
         await sb.from("lauf").update({ bild_pfad: pfad }).eq("id", zeile.id);
         zeile.bild_pfad = pfad; delete bildLinks[zeile.id];
       }
     }
 
     knopf.disabled = false;
-    schliesse();
     await ladeEigene(); zeichneAlles();
+    if(bildFehler){
+      knopf.textContent = "Ohne Bild schon gespeichert";
+      knopf.disabled = true;
+      el("f-abbruch").textContent = "Schließen";
+    }else{
+      schliesse();
+    }
   });
 
   setTimeout(()=>el("f-km").focus(), 30);
@@ -1081,9 +1090,9 @@ async function sicherung(){
 }
 async function einlesen(datei){
   let daten;
-  try{ daten = JSON.parse(await datei.text()); }catch(e){ return meldung("Diese Datei ist keine gültige Laufbuch-Sicherung."); }
+  try{ daten = JSON.parse(await datei.text()); }catch(e){ return meldung("Diese Datei ist keine gültige Sicherung von Running Record."); }
   if(!daten || daten.art !== "laufbuch" || !Array.isArray(daten.laeufe))
-    return meldung("Diese Datei ist keine gültige Laufbuch-Sicherung.");
+    return meldung("Diese Datei ist keine gültige Sicherung von Running Record.");
   if(!confirm("Sicherung einlesen? Einträge mit gleichem Datum, gleicher Distanz und gleicher Dauer werden übersprungen.")) return;
 
   const knopf = el("import-knopf");
