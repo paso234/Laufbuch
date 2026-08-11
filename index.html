@@ -249,7 +249,7 @@
 
 <!-- ================= Anmeldung ================= -->
 <div class="tor" id="tor" hidden>
-  <h1>Laufbuch</h1>
+  <h1>Running Record</h1>
   <p class="unter" id="tor-unter">Anmeldung per E-Mail</p>
   <div id="tor-inhalt"></div>
 </div>
@@ -258,21 +258,21 @@
 <div class="huelle" id="app" hidden>
   <header class="kopf">
     <div class="marke">
-      <h1>Laufbuch</h1>
+      <h1>Running Record</h1>
       <span class="augenbraue" id="ich-name"></span>
     </div>
     <button class="knopf-haupt" id="neu-knopf"><span class="plus">+</span> Lauf eintragen</button>
   </header>
 
   <nav class="reiter">
-    <button data-reiter="eigen" class="aktiv">Mein Laufbuch</button>
+    <button data-reiter="eigen" class="aktiv">Mein Running Record</button>
     <button data-reiter="feed">Feed</button>
     <button data-reiter="freunde">Freunde<span class="blase" id="blase" hidden></span></button>
   </nav>
 
   <div id="meldung-feld"></div>
 
-  <!-- Mein Laufbuch -->
+  <!-- Mein Running Record -->
   <section id="ansicht-eigen">
     <div class="kennzahlen" id="kennzahlen"></div>
     <div class="monate" id="monate"></div>
@@ -350,7 +350,7 @@ const zahl = (n, dez=1)=>Number(n).toFixed(dez).replace(".", ",");
 
 /* ---------- Grundgerüst prüfen ---------- */
 if(KONFIG.url.startsWith("HIER_") || KONFIG.schluessel.startsWith("HIER_")){
-  document.body.innerHTML = '<div class="tor"><h1>Laufbuch</h1>'+
+  document.body.innerHTML = '<div class="tor"><h1>Running Record</h1>'+
     '<p class="unter">Noch nicht eingerichtet</p>'+
     '<p class="hilfe">Trag oben in dieser Datei die Project URL und den anon key '+
     'aus deinem Supabase-Projekt ein (Project Settings ▸ API) und lade sie erneut hoch.</p></div>';
